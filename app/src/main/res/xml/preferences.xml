@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:hint="@string/preferences_username_hint"
+        android:key="@string/preferences_username"
+        android:title="@string/preferences_username_title" />
+
+    <EditTextPreference
+        android:inputType="textPassword"
+        android:key="@string/preferences_password"
+        android:title="@string/preferences_password_title" />
+
+    <ListPreference
+        android:defaultValue="@string/preferences_language_entryValues_english"
+        android:entries="@array/preferences_language_entries"
+        android:entryValues="@array/preferences_language_entryValues"
+        android:key="@string/preferences_language"
+        android:summary="@string/preferences_language_entries_english"
+        android:title="@string/preferences_language_title" />
+
+    <ListPreference
+        android:defaultValue="@string/preferences_reminderFrequency_entryValues_beforeMonday"
+        android:entries="@array/preferences_reminderFrequency_entries"
+        android:entryValues="@array/preferences_reminderFrequency_entryValues"
+        android:key="@string/preferences_reminderFrequency"
+        android:summary="@string/preferences_reminderFrequency_entries_beforeMonday"
+        android:title="@string/preferences_reminderFrequency_title" />
+</PreferenceScreen>

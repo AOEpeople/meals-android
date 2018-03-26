@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string name="app_name">MealsApp</string>
+
+    <string name="loginActivity_button_login_text">Login</string>
+    <string name="loginActivity_editText_username_hint">john.doe</string>
+    <string name="loginActivity_textView_password_text">Password</string>
+    <string name="loginActivity_textView_username_text">Username</string>
+    <string name="loginActivity_toolbar_appBar_title">AOEMEALS</string>
+
+    <string name="mainMenu_account_title">Account</string>
+    <string name="mainMenu_settings_title">Settings</string>
+
+    <string name="preferences_dailyReminderEnable_title">Enable Daily Reminder</string>
+    <string name="preferences_dailyReminderTime_title">Reminder Time</string>
+    <string name="preferences_language_entries_english">English</string>
+    <string name="preferences_language_entries_german">German</string>
+    <string name="preferences_language_title">Language</string>
+    <string name="preferences_password_title">Password</string>
+    <string name="preferences_reminderFrequency_entries_beforeEveryWeekday">Before every weekday</string>
+    <string name="preferences_reminderFrequency_entries_beforeMonday">On Sundays</string>
+    <string name="preferences_reminderFrequency_entries_never">Never</string>
+    <string name="preferences_reminderFrequency_title">Reminder</string>
+    <string name="preferences_username_hint">john.doe</string>
+    <string name="preferences_username_title">Username</string>
+
+    <string name="webActivity_toolbar_appBar_title">AOEMEALS</string>
+</resources>

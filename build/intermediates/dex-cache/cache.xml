@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\espresso-idling-resource-3.0.1.aar\e2227c6e63c91fcf4ceb42cdea141dee\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="f42cd459be08d98d05abb5f5361d057726e8f126">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-26.1.0.aar\edcfcde9020c93606d161e48658d81de\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b12cd9c87c3dfb012a911b6e38d2444ed0a65e1f">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\10.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\34bfb3566d8410208520ae4aafa6de6e\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.1.0.aar\f2b124f9292fca56dcf7ebfc5b33661e\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="f97cf85b0fe70d37a705111dafa6b1b418ea1650">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\12.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-databind\2.3.2\c75edc740a6d8cb1cef6fa82fa594e0bce561916\jackson-databind-2.3.2.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="c75edc740a6d8cb1cef6fa82fa594e0bce561916">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\modules-2\files-2.1\org.springframework.android\spring-android-rest-template\2.0.0.M3\204c594c2a47073b30d3cb14ca69ba1066c4e44c\spring-android-rest-template-2.0.0.M3.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="204c594c2a47073b30d3cb14ca69ba1066c4e44c">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\cdee1554491abcc70dda2801bc2f1b3f\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\11.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-annotations\2.3.0\f5e853a20b60758922453d56f9ae1e64af5cb3da\jackson-annotations-2.3.0.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="f5e853a20b60758922453d56f9ae1e64af5cb3da">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\20.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.3.2\559b70ac8a0d5cad611da4223137a920147201ba\jackson-core-2.3.2.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="559b70ac8a0d5cad611da4223137a920147201ba">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\21.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\modules-2\files-2.1\com.android.support\support-annotations\26.1.0\814258103cf26a15fcc26ecce35f5b7d24b73f8\support-annotations-26.1.0.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="0814258103cf26a15fcc26ecce35f5b7d24b73f8">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\17.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.1.0.aar\3f89036196f7f9c3eafc3a7c6f82bb24\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="508f50705b4fde51a16259f29c854201a3044516">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\15.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\volley-1.1.0.aar\0f1b954b905079dd052d7ad58ddd2fdd\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="9bdfc3e83c6bc1f8bc5807cdaf7e94ac884a2a0d">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\modules-2\files-2.1\org.springframework.android\spring-android-core\2.0.0.M3\c7e2c60943248bbce5de6cf552592281ed2296b\spring-android-core-2.0.0.M3.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="0c7e2c60943248bbce5de6cf552592281ed2296b">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\19.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\AppData\Local\Android\sdk\extras\m2repository\com\android\support\constraint\constraint-layout-solver\1.0.2\constraint-layout-solver-1.0.2.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\18.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\modules-2\files-2.1\android.arch.core\common\1.0.0\a2d487452376193fc8c103dd2b9bd5f2b1b44563\common-1.0.0.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="a2d487452376193fc8c103dd2b9bd5f2b1b44563">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\24.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\preference-v7-26.1.0.aar\99527c3499195d5313a7003ee0935c66\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="d4fcdb502616fa4dae61969d0bc931fbb7a6e213">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\modules-2\files-2.1\android.arch.lifecycle\common\1.0.0\e414a4cb28434e25c4f6aa71426eb20cf4874ae9\common-1.0.0.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="e414a4cb28434e25c4f6aa71426eb20cf4874ae9">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\23.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.1.0.aar\18d0e8d80d148a2930445201d949c978\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="f428e2fbc9ed0b297e3a3f420e51e6982f66822d">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\support-fragment-26.1.0.aar\9d3b69063aded1985551d3a9f3bcbbcc\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="7efef32744ca4a436492d5cf28c08698cc2af256">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\13.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.1.0.aar\de51af32abfcd72ce352e1cb19b575ea\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="40392f30a601db5675cdf18192aab013d6fee6ec">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.1.0.aar\3ce54bb09e189decde1b11e315887fd2\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="6f4138a4e065826cb044d49faea4cfd7191773d1">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\e2d6cbd0aff126f8244b8bc947e8d004\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b62fdc4cfef174c1e456014195c83fa7de7dc041">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\22.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\support-core-utils-26.1.0.aar\8976fa2e355b9d9cb4ef9b7801b5aa18\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="233f60a165ae622c8b36731502ebbda0f65e1930">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\14.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tobias.uhmann\.gradle\caches\transforms-1\files-1.1\support-compat-26.1.0.aar\1a007d249fe3bef1e5ed54382a9d545d\jars\classes.jar"
+        jumboMode="false"
+        min-sdk-version="14"
+        optimize="true"
+        revision="26.0.2"
+        sha1="2442771a5590dd4eb4bce00c2e9dca9e22e4c963">
+        <dex dex="C:\Users\tobias.uhmann\dev\android\MealsApp\app\build\intermediates\transforms\preDex\deploy\16.jar" />
+    </item>
+
+</items>

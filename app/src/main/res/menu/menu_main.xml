@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mainMenu_alarm"
+        android:title="ALARM"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/mainMenu_account"
+        android:icon="@drawable/ic_euro_symbol_white_24dp"
+        android:title="@string/mainMenu_account_title"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/mainMenu_settings"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="@string/mainMenu_settings_title"
+        app:showAsAction="ifRoom" />
+</menu>

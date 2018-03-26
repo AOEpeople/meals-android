@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string-array name="preferences_language_entries">
+        <item>@string/preferences_language_entries_english</item>
+        <item>@string/preferences_language_entries_german</item>
+    </string-array>
+    <string-array name="preferences_language_entryValues">
+        <item>@string/preferences_language_entryValues_english</item>
+        <item>@string/preferences_language_entryValues_german</item>
+    </string-array>
+    <string-array name="preferences_reminderFrequency_entries">
+        <item>@string/preferences_reminderFrequency_entries_beforeMonday</item>
+        <item>@string/preferences_reminderFrequency_entries_beforeEveryWeekday</item>
+        <item>@string/preferences_reminderFrequency_entries_never</item>
+    </string-array>
+    <string-array name="preferences_reminderFrequency_entryValues">
+        <item>@string/preferences_reminderFrequency_entryValues_beforeMonday</item>
+        <item>@string/preferences_reminderFrequency_entryValues_beforeEveryWeekday</item>
+        <item>@string/preferences_reminderFrequency_entryValues_never</item>
+    </string-array>
+</resources>

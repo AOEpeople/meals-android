@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+
+        debugConfig {
+            keyAlias 'AndroidDebugKey'
+            keyPassword 'android'
+            storeFile file('C:/Users/tobias.uhmann/.android/debug.keystore')
+            storePassword 'android'
+        }
+    }
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.aoe.mealsapp"
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        debug {
+            buildConfigField "String", "SERVER_URL", '"http://192.168.99.100"'
+
+            buildConfigField "String", "OAUTH_CLIENT_ID", '\"' + findProperty('oauth_client_id') + '\"'
+            buildConfigField "String", "OAUTH_CLIENT_SECRET", '\"' + findProperty('oauth_client_secret') + '\"'
+        }
+        deploy {
+            buildConfigField "String", "SERVER_URL", '"http://deploy.mealz.itg.de2.dc.aoe.lan"'
+            signingConfig signingConfigs.debugConfig
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "SERVER_URL", '"https://meals.aoe.com"'
+        }
+    }
+    useLibrary 'org.apache.http.legacy'
+}
+
+dependencies {
+    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "com.android.support:preference-v7:$rootProject.supportLibraryVersion"
+    // Dependencies for local unit tests
+    testImplementation "junit:junit:$rootProject.ext.junitVersion"
+    testImplementation "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
+    testImplementation "org.powermock:powermock:$rootProject.ext.powermockVersion"
+    testImplementation "org.powermock:powermock-module-junit4:$rootProject.ext.powermockVersion"
+    testImplementation "org.powermock:powermock-api-mockito:$rootProject.ext.powermockVersion"
+    // Android Testing Support Library's runner and rules
+    androidTestImplementation "com.android.support.test:runner:$rootProject.ext.runnerVersion"
+    // Espresso UI Testing dependencies
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
+    implementation "com.android.support.test.espresso:espresso-idling-resource:$rootProject.ext.espressoVersion"
+    // 3rd party
+    implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+    implementation 'com.android.volley:volley:1.1.0'
+}
