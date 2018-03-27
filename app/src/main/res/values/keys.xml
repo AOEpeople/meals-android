@@ -4,12 +4,10 @@
     <string name="preferences_language">preferences_language</string>
     <string name="preferences_language_entryValues_english">preferences_language_entryValues_english</string>
     <string name="preferences_language_entryValues_german">preferences_language_entryValues_german</string>
-    <string name="preferences_language_entryValues_default">@string/preferences_language_entryValues_english</string>
     <string name="preferences_password">preferences_password</string>
     <string name="preferences_reminderFrequency">preferences_reminderFrequency</string>
     <string name="preferences_reminderFrequency_entryValues_beforeEveryWeekday">preferences_reminderFrequency_entryValues_beforeEveryWeekday</string>
     <string name="preferences_reminderFrequency_entryValues_beforeMonday">preferences_reminderFrequency_entryValues_beforeMonday</string>
     <string name="preferences_reminderFrequency_entryValues_never">preferences_reminderFrequency_entryValues_never</string>
-    <string name="preferences_reminderFrequency_entryValues_default">@string/preferences_reminderFrequency_entryValues_beforeMonday</string>
     <string name="preferences_username">preferences_username</string>
 </resources>

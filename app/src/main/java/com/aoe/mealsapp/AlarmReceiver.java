@@ -86,12 +86,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         /* read set reminder frequency from default shared preferences */
 
-        SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(context);
-
         String reminderFrequencyKey = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(keys.reminderFrequency, null);
+                .getString(SharedPreferenceKeys.REMINDER_FREQUENCY, null);
 
         if (reminderFrequencyKey == null) {
+            // TODO throw exception
             Log.e(TAG, "userWantsToBeNotifiedForTomorrow: Cannot read reminder frequency " +
                     "from shared preferences. Return false.");
             return false;
@@ -102,16 +101,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         Calendar today = Calendar.getInstance();
         int dayOfWeek = today.get(Calendar.DAY_OF_WEEK);
 
-        if (reminderFrequencyKey.equals(keys.reminderFrequency_entryValues_beforeMonday)) {
-            return dayOfWeek == 1;
-        } else if (reminderFrequencyKey.equals(keys.reminderFrequency_entryValues_beforeEveryWeekday)) {
-            return 1 <= dayOfWeek && dayOfWeek <= 5;
-        } else if (reminderFrequencyKey.equals(keys.reminderFrequency_entryValues_never)) {
-            return false;
-        } else {
-            //unreachable
-            return false;
+        switch (reminderFrequencyKey) {
+            case SharedPreferenceKeys.REMINDER_FREQUENCY__BEFORE_MONDAY:
+                return dayOfWeek == 1;
+
+            case SharedPreferenceKeys.REMINDER_FREQUENCY__BEFORE_EVERY_WEEKDAY:
+                return 1 <= dayOfWeek && dayOfWeek <= 5;
+
+            case SharedPreferenceKeys.REMINDER_FREQUENCY__NEVER:
+                return false;
         }
+
+        // unreachable
+        return false;
     }
 
     /**
@@ -194,10 +196,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 /* read credentials from shared preferences */
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(context);
 
-                String username = sharedPreferences.getString(keys.username, null);
-                String password = sharedPreferences.getString(keys.password, null);
+                String username = sharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
+                String password = sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
 
                 // TODO handle null
 

@@ -75,10 +75,9 @@ public class WebActivity extends AppCompatActivity
      */
     private void loadLoginPage() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(this);
 
-        String username = sharedPreferences.getString(keys.username, null);
-        String password = sharedPreferences.getString(keys.password, null);
+        String username = sharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
+        String password = sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
 
         if (username == null) {
             Log.w(TAG, "onCreate: SharedPreferences contains no username. username = \"\"");
@@ -118,16 +117,15 @@ public class WebActivity extends AppCompatActivity
                 /* unexpected page (e.g. login because bad credentials) -> LoginActivity */
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(WebActivity.this);
-                SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(WebActivity.this);
 
                 if (!(url.equals(PAGE_MAIN) || url.equals(PAGE_TRANSACTIONS))) {
-                    sharedPreferences.edit().putBoolean(keys.credentialsWereValidated, false).apply();
+                    sharedPreferences.edit().putBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, false).apply();
 
                     startActivity(new Intent(WebActivity.this, LoginActivity.class));
                     finish();
 
                 } else {
-                    sharedPreferences.edit().putBoolean(keys.credentialsWereValidated, true).apply();
+                    sharedPreferences.edit().putBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, true).apply();
                 }
             }
         });
@@ -228,14 +226,14 @@ public class WebActivity extends AppCompatActivity
                 + "onSharedPreferenceChanged() called with: sharedPreferences = ["
                 + sharedPreferences + "], key = [" + key + "]");
 
-        SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(this);
+        // TODO switch
 
-        if (key.equals(keys.username) || key.equals(keys.password)) {
+        if (key.equals(SharedPreferenceKeys.USERNAME) || key.equals(SharedPreferenceKeys.PASSWORD)) {
 
             /* load login page with new credentials */
 
-            String username = sharedPreferences.getString(keys.username, null);
-            String password = sharedPreferences.getString(keys.password, null);
+            String username = sharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
+            String password = sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
 
             // TODO review null handling
 
@@ -252,7 +250,7 @@ public class WebActivity extends AppCompatActivity
             String postData = "_username=" + username + "&_password=" + password;
             webView.postUrl(PAGE_LOGIN, postData.getBytes());
 
-        } else if (key.equals(keys.language)) {
+        } else if (key.equals(SharedPreferenceKeys.LANGUAGE)) {
 
             /* reload current web page with other language */
 

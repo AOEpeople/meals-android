@@ -17,7 +17,6 @@
         android:entries="@array/preferences_language_entries"
         android:entryValues="@array/preferences_language_entryValues"
         android:key="@string/preferences_language"
-        android:summary="@string/preferences_language_entries_english"
         android:title="@string/preferences_language_title" />
 
     <ListPreference
@@ -25,6 +24,5 @@
         android:entries="@array/preferences_reminderFrequency_entries"
         android:entryValues="@array/preferences_reminderFrequency_entryValues"
         android:key="@string/preferences_reminderFrequency"
-        android:summary="@string/preferences_reminderFrequency_entries_beforeMonday"
         android:title="@string/preferences_reminderFrequency_title" />
 </PreferenceScreen>

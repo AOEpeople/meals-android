@@ -41,7 +41,24 @@ public class SettingsFragment extends PreferenceFragment
 
         addPreferencesFromResource(R.xml.preferences);
 
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
+        /* set summary fields */
+
+        String username = sharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
+        String reminderFrequencyKey = sharedPreferences.getString(SharedPreferenceKeys.REMINDER_FREQUENCY,null);
+        String languageKey = sharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
+
+        // TODO handle null
+
+        findPreference(SharedPreferenceKeys.USERNAME).setSummary(username);
+        findPreference(SharedPreferenceKeys.REMINDER_FREQUENCY).setSummary(
+                getActivity().getString(SharedPreferenceKeys.keysToValues.get(reminderFrequencyKey)));
+        findPreference(SharedPreferenceKeys.LANGUAGE).setSummary(
+                getActivity().getString(SharedPreferenceKeys.keysToValues.get(languageKey)));
+
     }
 
     @Override
@@ -63,17 +80,19 @@ public class SettingsFragment extends PreferenceFragment
                 + "onSharedPreferenceChanged() called with: sharedPreferences = [" + sharedPreferences
                 + "], key = [" + key + "]");
 
-        SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(getActivity());
+        switch (key) {
+            case SharedPreferenceKeys.USERNAME:
+                findPreference(SharedPreferenceKeys.USERNAME).setSummary(
+                        sharedPreferences.getString(SharedPreferenceKeys.USERNAME, null));
+                break;
 
-        if (key.equals(keys.username)) {
-            findPreference(keys.username).setSummary(
-                    sharedPreferences.getString(keys.username, null));
+            case SharedPreferenceKeys.REMINDER_FREQUENCY:
+                handleReminderFrequencyChange(sharedPreferences);
+                break;
 
-        } else if (key.equals(keys.language)) {
-            handleLanguageChange(sharedPreferences);
-
-        } else if (key.equals(keys.reminderFrequency)) {
-            handleReminderFrequencyChange(sharedPreferences);
+            case SharedPreferenceKeys.LANGUAGE:
+                handleLanguageChange(sharedPreferences);
+                break;
         }
     }
 
@@ -81,29 +100,15 @@ public class SettingsFragment extends PreferenceFragment
     // HELPER
     //
 
-    private void handleLanguageChange(SharedPreferences sharedPreferences) {
-
-        SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(getActivity());
-        Context context = getActivity();
-
-        /* set summary text in UI */
-
-        String languageKey = sharedPreferences.getString(keys.language, keys.language_entryValues_default);
-        String languageText = context.getString(keys.getEntry(languageKey));
-        findPreference(keys.language).setSummary(languageText);
-    }
-
     private void handleReminderFrequencyChange(SharedPreferences sharedPreferences) {
 
-        SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(getActivity());
         Context context = getActivity();
 
         /* set summary text in UI */
 
-        String reminderFrequencyKey = sharedPreferences.getString(keys.reminderFrequency,
-                keys.reminderFrequency_entryValues_default);
-        String reminderFrequencyText = context.getString(keys.getEntry(reminderFrequencyKey));
-        findPreference(keys.reminderFrequency).setSummary(reminderFrequencyText);
+        String reminderFrequencyKey = sharedPreferences.getString(SharedPreferenceKeys.REMINDER_FREQUENCY, null); // TODO handle null
+        String reminderFrequencyText = context.getString(SharedPreferenceKeys.keysToValues.get(reminderFrequencyKey));
+        findPreference(SharedPreferenceKeys.REMINDER_FREQUENCY).setSummary(reminderFrequencyText);
 
         /* set/cancel alarm & enable/disable boot receiver */
 
@@ -116,8 +121,10 @@ public class SettingsFragment extends PreferenceFragment
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0,
                 new Intent(context, AlarmReceiver.class), 0);
 
-        if (reminderFrequencyKey.equals(keys.reminderFrequency_entryValues_beforeMonday)
-                || reminderFrequencyKey.equals(keys.reminderFrequency_entryValues_beforeEveryWeekday)) {
+        // TODO switch
+
+        if (reminderFrequencyKey.equals(SharedPreferenceKeys.REMINDER_FREQUENCY__BEFORE_EVERY_WEEKDAY)
+                || reminderFrequencyKey.equals(SharedPreferenceKeys.REMINDER_FREQUENCY__BEFORE_MONDAY)) {
 
             Calendar reminderTime = null;
             try {
@@ -137,7 +144,7 @@ public class SettingsFragment extends PreferenceFragment
 
             enableBootReceiver(context);
 
-        } else if (reminderFrequencyKey.equals(keys.reminderFrequency_entryValues_never)) {
+        } else if (reminderFrequencyKey.equals(SharedPreferenceKeys.REMINDER_FREQUENCY__NEVER)) {
             alarmManager.cancel(alarmIntent);
             disableBootReceiver(context);
         }
@@ -179,5 +186,16 @@ public class SettingsFragment extends PreferenceFragment
         packageManager.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
+    }
+
+    private void handleLanguageChange(SharedPreferences sharedPreferences) {
+
+        Context context = getActivity();
+
+        /* set summary text in UI */
+
+        String languageKey = sharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null); // TODO handle null
+        String languageText = context.getString(SharedPreferenceKeys.keysToValues.get(languageKey));
+        findPreference(SharedPreferenceKeys.LANGUAGE).setSummary(languageText);
     }
 }

@@ -32,11 +32,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final SharedPreferenceKeys keys = SharedPreferenceKeys.getInstance(this);
 
         /* skip this activity if credentials are valid */
 
-        boolean validCredentials = sharedPreferences.getBoolean(keys.credentialsWereValidated, false);
+        boolean validCredentials = sharedPreferences.getBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, false);
 
         if (validCredentials)
             startActivity(new Intent(this, WebActivity.class));
@@ -52,8 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         EditText editText_username = findViewById(R.id.loginActivity_editText_username);
         EditText editText_password = findViewById(R.id.loginActivity_editText_password);
 
-        editText_username.setText(sharedPreferences.getString(keys.username, ""));
-        editText_password.setText(sharedPreferences.getString(keys.password, ""));
+        editText_username.setText(sharedPreferences.getString(SharedPreferenceKeys.USERNAME, ""));
+        editText_password.setText(sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, ""));
 
         /* set up last EditText to login on clicking the Done key */
 
@@ -95,11 +94,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 EditText editText_username = findViewById(R.id.loginActivity_editText_username);
                 String username = editText_username.getText().toString();
-                sharedPreferences.edit().putString(keys.username, username).commit();
+                sharedPreferences.edit().putString(SharedPreferenceKeys.USERNAME, username).commit();
 
                 EditText editText_password = findViewById(R.id.loginActivity_editText_password);
                 String password = editText_password.getText().toString();
-                sharedPreferences.edit().putString(keys.password, password).commit();
+                sharedPreferences.edit().putString(SharedPreferenceKeys.PASSWORD, password).commit();
 
                 startActivity(new Intent(LoginActivity.this, WebActivity.class));
             }
