@@ -22,7 +22,7 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "SERVER_URL", '"http://192.168.99.100"'
+            buildConfigField "String", "SERVER_URL", '"http://10.165.103.245"'
 
             buildConfigField "String", "OAUTH_CLIENT_ID", '\"' + findProperty('oauth_client_id') + '\"'
             buildConfigField "String", "OAUTH_CLIENT_SECRET", '\"' + findProperty('oauth_client_secret') + '\"'
@@ -30,6 +30,9 @@ android {
         deploy {
             buildConfigField "String", "SERVER_URL", '"http://deploy.mealz.itg.de2.dc.aoe.lan"'
             signingConfig signingConfigs.debugConfig
+
+            buildConfigField "String", "OAUTH_CLIENT_ID", '\"' + findProperty('oauth_client_id') + '\"'
+            buildConfigField "String", "OAUTH_CLIENT_SECRET", '\"' + findProperty('oauth_client_secret') + '\"'
         }
         release {
             minifyEnabled false
