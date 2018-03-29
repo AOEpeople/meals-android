@@ -31,6 +31,9 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
+        // set default preference values
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         /* skip this activity if credentials are valid */
