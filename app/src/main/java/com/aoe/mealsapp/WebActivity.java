@@ -60,6 +60,8 @@ public class WebActivity extends AppCompatActivity
         setUpAppBar();
         initWebView();
 
+
+
         // set default preference values
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
