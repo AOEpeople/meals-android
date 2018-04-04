@@ -5,9 +5,9 @@
 
     <string name="app_name">MealsApp</string>
 
-    <string name="loginActivity_button_login_text">Login</string>
+    <string name="loginFragment_button_login_text">Login</string>
 
-    <string name="loginActivity_editText_username_hint">max.mustermann</string>
+    <string name="loginFragment_editText_username_hint">max.mustermann</string>
 
     <string name="preferences_dailyReminderEnable_title">Tägliche Erinnerung aktivieren</string>
     <string name="preferences_dailyReminderTime_title">Uhrzeit für Erinnerung</string>
@@ -16,8 +16,8 @@
     <string name="preferences_reminderFrequency_title">Erinnerung</string>
     <string name="preferences_username_title">Benutzername</string>
 
-    <string name="loginActivity_textView_password_text">Passwort</string>
-    <string name="loginActivity_textView_username_text">Benutzername</string>
+    <string name="loginFragment_textView_password_text">Passwort</string>
+    <string name="loginFragment_textView_username_text">Benutzername</string>
     <string name="preferences_reminderFrequency_entries_beforeEveryWeekday">Vor jedem Wochentag</string>
     <string name="preferences_reminderFrequency_entries_beforeMonday">Sonntags</string>
     <string name="preferences_reminderFrequency_entries_never">Nie</string>

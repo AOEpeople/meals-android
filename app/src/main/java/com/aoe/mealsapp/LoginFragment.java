@@ -1,15 +1,18 @@
 package com.aoe.mealsapp;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,40 +22,58 @@ import android.widget.TextView;
  * Activity that is shown on first startup for the user to enter his credentials. Will be started
  * whenever the credentials become invalid.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginFragment extends Fragment {
 
-    private static final String TAG = "## " + LoginActivity.class.getSimpleName();
+    private static final String TAG = "## " + LoginFragment.class.getSimpleName();
+
+    public static LoginFragment newInstance() {
+        return new LoginFragment();
+    }
+
+    private OnFragmentInteractionListener onFragmentInteractionListener;
+
+    public LoginFragment() {
+        // Required empty public constructor
+    }
+
+    //
+    // EXTENDS Fragment
+    //
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         Log.d(TAG, Thread.currentThread().getName() + ": "
-                + "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
+                + "onAttach() called with: context = [" + context + "]");
 
-        setContentView(R.layout.activity_login);
+        if (context instanceof OnFragmentInteractionListener) {
+            onFragmentInteractionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
 
-        // set default preference values
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, Thread.currentThread().getName() + ": "
+                + "onCreateView() called with: inflater = [" + inflater + "], container = [" + container
+                + "], savedInstanceState = [" + savedInstanceState + "]");
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final View rootView = inflater.inflate(R.layout.fragment_login, container, false);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         /* skip this activity if credentials are valid */
 
         boolean validCredentials = sharedPreferences.getBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, false);
 
         if (validCredentials)
-            startActivity(new Intent(this, WebActivity.class));
-
-        /* set up toolbar */
-
-        Toolbar toolbar = findViewById(R.id.webActivity_toolbar_appBar);
-        toolbar.setLogo(R.drawable.logo);
-        setSupportActionBar(toolbar);
+            startActivity(new Intent(getContext(), WebActivity.class));
 
         /* autofill credentials */
 
-        EditText editText_username = findViewById(R.id.loginFragment_editText_username);
-        EditText editText_password = findViewById(R.id.loginFragment_editText_password);
+        EditText editText_username = rootView.findViewById(R.id.loginFragment_editText_username);
+        EditText editText_password = rootView.findViewById(R.id.loginFragment_editText_password);
 
         editText_username.setText(sharedPreferences.getString(SharedPreferenceKeys.USERNAME, ""));
         editText_password.setText(sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, ""));
@@ -69,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                 boolean handled = false;
 
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    Button button_login = findViewById(R.id.loginFragment_button_login);
+                    Button button_login = rootView.findViewById(R.id.loginFragment_button_login);
                     button_login.performClick();
 
                     handled = true;
@@ -81,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
         /* set up button */
 
-        Button button_login = findViewById(R.id.loginFragment_button_login);
+        Button button_login = rootView.findViewById(R.id.loginFragment_button_login);
         button_login.setOnClickListener(new View.OnClickListener() {
 
             @SuppressLint("ApplySharedPref")
@@ -93,34 +114,37 @@ public class LoginActivity extends AppCompatActivity {
                 /* save username, password in preferences & start WebActivity */
 
                 SharedPreferences sharedPreferences
-                        = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                        = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-                EditText editText_username = findViewById(R.id.loginFragment_editText_username);
+                EditText editText_username = rootView.findViewById(R.id.loginFragment_editText_username);
                 String username = editText_username.getText().toString();
                 sharedPreferences.edit().putString(SharedPreferenceKeys.USERNAME, username).commit();
 
-                EditText editText_password = findViewById(R.id.loginFragment_editText_password);
+                EditText editText_password = rootView.findViewById(R.id.loginFragment_editText_password);
                 String password = editText_password.getText().toString();
                 sharedPreferences.edit().putString(SharedPreferenceKeys.PASSWORD, password).commit();
 
-                startActivity(new Intent(LoginActivity.this, WebActivity.class));
+                onFragmentInteractionListener.onLoginClicked();
             }
         });
+
+        return rootView;
     }
 
-    /**
-     * Finish this activity when starting another so that pressing the back button on the device
-     * does not return to this login activity. It will be started on first startup and whenever
-     * the credentials become invalid.
-     *
-     * @param intent
-     */
     @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
+    public void onDetach() {
+        super.onDetach();
         Log.d(TAG, Thread.currentThread().getName() + ": "
-                + "startActivity() called with: intent = [" + intent + "]");
+                + "onDetach() called");
 
-        finish();
+        onFragmentInteractionListener = null;
+    }
+
+    //
+    // INNER TYPES
+    //
+
+    public interface OnFragmentInteractionListener {
+        void onLoginClicked();
     }
 }

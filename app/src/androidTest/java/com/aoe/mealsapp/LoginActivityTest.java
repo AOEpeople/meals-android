@@ -50,11 +50,11 @@ public class LoginActivityTest {
 
         // WHEN entering correct credentials
 
-        onView(withId(R.id.loginActivity_editText_username)).perform(click());
-        onView(withId(R.id.loginActivity_editText_username)).perform(replaceText("alice"), closeSoftKeyboard());
-        onView(withId(R.id.loginActivity_editText_username)).perform(pressImeActionButton());
-        onView(withId(R.id.loginActivity_editText_password)).perform(replaceText("alice"), closeSoftKeyboard());
-        onView(withId(R.id.loginActivity_editText_password)).perform(pressImeActionButton());
+        onView(withId(R.id.loginFragment_editText_username)).perform(click());
+        onView(withId(R.id.loginFragment_editText_username)).perform(replaceText("alice"), closeSoftKeyboard());
+        onView(withId(R.id.loginFragment_editText_username)).perform(pressImeActionButton());
+        onView(withId(R.id.loginFragment_editText_password)).perform(replaceText("alice"), closeSoftKeyboard());
+        onView(withId(R.id.loginFragment_editText_password)).perform(pressImeActionButton());
 
 
         // THEN the WebActivity should be shown
@@ -80,7 +80,7 @@ public class LoginActivityTest {
 
         // THEN the LoginActivity should be shown
 
-        onView(withId(R.id.loginActivity_textView_username)).check(matches(isDisplayed()));
+        onView(withId(R.id.loginFragment_textView_username)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -132,15 +132,15 @@ public class LoginActivityTest {
 
         // WHEN logging in with correct credentials
 
-        onView(withId(R.id.loginActivity_editText_username)).perform(click());
-        onView(withId(R.id.loginActivity_editText_username)).perform(replaceText("alice"), closeSoftKeyboard());
-        onView(withId(R.id.loginActivity_editText_username)).perform(pressImeActionButton());
-        onView(withId(R.id.loginActivity_editText_password)).perform(replaceText("alice"), closeSoftKeyboard());
-        onView(withId(R.id.loginActivity_editText_password)).perform(pressImeActionButton());
+        onView(withId(R.id.loginFragment_editText_username)).perform(click());
+        onView(withId(R.id.loginFragment_editText_username)).perform(replaceText("alice"), closeSoftKeyboard());
+        onView(withId(R.id.loginFragment_editText_username)).perform(pressImeActionButton());
+        onView(withId(R.id.loginFragment_editText_password)).perform(replaceText("alice"), closeSoftKeyboard());
+        onView(withId(R.id.loginFragment_editText_password)).perform(pressImeActionButton());
 
 
         // THEN the WebActivity should be shown
 
-        onView(withId(R.id.loginActivity_editText_username)).check(matches(isDisplayed()));
+        onView(withId(R.id.loginFragment_editText_username)).check(matches(isDisplayed()));
     }
 }
