@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
         if (topFragment instanceof OnBackPressedListener) {
             boolean backPressedHandled = ((OnBackPressedListener)topFragment).onBackPressed();
 
+            // TODO optimize: avoid super.onBackPressed twice (?)
             if (!backPressedHandled) {
                 super.onBackPressed();
 

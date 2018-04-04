@@ -286,7 +286,7 @@ public class WebFragment extends Fragment
     /**
      * - enable JavaScript
      * - set custom HTTP user agent
-     * - set onPageFinished handler that redirects to the LoginActivity if credentials are wrong
+     * - set onPageFinished handler that notifies the parent activity if the credentials are wrong
      */
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView(WebView webView) {
@@ -304,16 +304,14 @@ public class WebFragment extends Fragment
 
                 url = url.replaceAll("/$", "");
 
-                /* unexpected page (e.g. login because bad credentials) -> LoginActivity */
+                /* unexpected page (e.g. login because bad credentials) -> notify MainActivity */
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
                 if (!(url.equals(PAGE_MAIN) || url.equals(PAGE_TRANSACTIONS))) {
                     sharedPreferences.edit().putBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, false).apply();
 
-//                    startActivity(new Intent(getContext(), LoginActivity.class));
                     onFragmentInteractionListener.onLoginFailed();
-//                    finish();
 
                 } else {
                     sharedPreferences.edit().putBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, true).apply();

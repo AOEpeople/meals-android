@@ -2,7 +2,6 @@ package com.aoe.mealsapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -63,13 +62,6 @@ public class LoginFragment extends Fragment {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        /* skip this activity if credentials are valid */
-
-        boolean validCredentials = sharedPreferences.getBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, false);
-
-        if (validCredentials)
-            startActivity(new Intent(getContext(), WebActivity.class));
-
         /* autofill credentials */
 
         EditText editText_username = rootView.findViewById(R.id.loginFragment_editText_username);
@@ -111,7 +103,7 @@ public class LoginFragment extends Fragment {
                 Log.d(TAG, Thread.currentThread().getName() + ": "
                         + "onClick() called with: view = [" + view + "]");
 
-                /* save username, password in preferences & start WebActivity */
+                /* save username, password in preferences & notify MainActivity about login */
 
                 SharedPreferences sharedPreferences
                         = PreferenceManager.getDefaultSharedPreferences(getContext());

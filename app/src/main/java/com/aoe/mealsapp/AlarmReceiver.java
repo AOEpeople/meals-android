@@ -43,6 +43,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static final String NOTIFICATION_TITLE = "Meals Check";
     private static final String NOTIFICATION_TEXT = "Did you forget to register for meal tomorrow?";
 
+    //
+    // EXTENDS BroadcastReceiver
+    //
+
     /**
      * On daily alarm that triggers participation check:
      * - check settings: Does user want to be notified?
@@ -53,8 +57,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         Log.d(TAG, Thread.currentThread().getName() + ": "
                 + "onReceive() called with: context = [" + context + "], intent = [" + intent + "]");
-
-        Log.d(TAG, "onReceive: #### " + OAUTH_CLIENT_ID);
 
         if (userWantsToBeNotifiedForTomorrow(context)) {
 
@@ -75,6 +77,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 
+    //
+    // HELPER
+    //
+
     /**
      * Read the user settings and compare with current weekday to determine whether to check
      * for meals participation at all.
@@ -90,7 +96,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .getString(SharedPreferenceKeys.REMINDER_FREQUENCY, null);
 
         if (reminderFrequencyKey == null) {
-            // TODO throw exception
+            // TODO review: should never happen
             Log.e(TAG, "userWantsToBeNotifiedForTomorrow: Cannot read reminder frequency " +
                     "from shared preferences. Return false.");
             return false;
@@ -306,8 +312,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Show a notification in the notification bar. Upon clicking it the LoginActivity is started
-     * which will normally forward the user to the WebActivity.
+     * Show a notification in the notification bar. Upon clicking it the MainActivity is started
      *
      * @param context Context necessary to create notification
      */
@@ -320,9 +325,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentTitle(NOTIFICATION_TITLE)
                 .setContentText(NOTIFICATION_TEXT);
 
-        Intent resultIntent = new Intent(context, LoginActivity.class);
+        Intent resultIntent = new Intent(context, MainActivity.class);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addParentStack(LoginActivity.class);
+        taskStackBuilder.addParentStack(MainActivity.class);
         taskStackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
