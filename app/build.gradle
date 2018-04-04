@@ -30,7 +30,8 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "SERVER_URL", '"http://10.165.103.245"'
+//            buildConfigField "String", "SERVER_URL", '"http://10.165.103.245"'
+            buildConfigField "String", "SERVER_URL", '"http://deploy.mealz.itg.de2.dc.aoe.lan"'
         }
         deploy {
             signingConfig signingConfigs.debugConfig

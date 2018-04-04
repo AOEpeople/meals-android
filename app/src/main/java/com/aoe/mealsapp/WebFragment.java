@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WebFragment extends Fragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener {
+        implements SharedPreferences.OnSharedPreferenceChangeListener, OnBackPressedListener {
 
     //
     // CONSTANTS
@@ -336,10 +336,25 @@ public class WebFragment extends Fragment
     }
 
     //
+    // IMPLEMENTS OnBackPressedListener
+    //
+
+    @Override
+    public boolean onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+            Log.d(TAG, "onBackPressed: ");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //
     // INNER TYPES
     //
 
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         void onLoginFailed();
     }
 }
