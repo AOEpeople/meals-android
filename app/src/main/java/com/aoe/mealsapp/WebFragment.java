@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -98,8 +99,15 @@ public class WebFragment extends Fragment
 
         /* set up app bar */
 
-        AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
-        assert appCompatActivity != null; // fragment has been attached TODO review
+        FragmentActivity fragmentActivity = getActivity();
+        assert fragmentActivity != null; // Fragment has been attached to Activity
+        AppCompatActivity appCompatActivity;
+
+        if (fragmentActivity instanceof AppCompatActivity) {
+            appCompatActivity = (AppCompatActivity)fragmentActivity;
+        } else {
+            throw new RuntimeException(fragmentActivity.toString() + " must extend AppCompatActivity");
+        }
 
         Toolbar toolbar = rootView.findViewById(R.id.webFragment_toolbar_appBar);
         toolbar.setLogo(R.drawable.logo);
