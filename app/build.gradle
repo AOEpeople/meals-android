@@ -7,14 +7,6 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
-    signingConfigs {
-        debugConfig {
-            keyAlias 'AndroidDebugKey'
-            keyPassword 'android'
-            storeFile file('C:/Users/tobias.uhmann/.android/debug.keystore')
-            storePassword 'android'
-        }
-    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.aoe.mealsapp"
@@ -30,11 +22,10 @@ android {
     }
     buildTypes {
         debug {
-//            buildConfigField "String", "SERVER_URL", '"http://10.165.103.245"'
-            buildConfigField "String", "SERVER_URL", '"http://deploy.mealz.itg.de2.dc.aoe.lan"'
+            buildConfigField "String", "SERVER_URL", '"http://10.165.103.245"'
         }
         deploy {
-            signingConfig signingConfigs.debugConfig
+            signingConfig signingConfigs.debug
 
             buildConfigField "String", "SERVER_URL", '"http://deploy.mealz.itg.de2.dc.aoe.lan"'
         }
