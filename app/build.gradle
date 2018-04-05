@@ -46,6 +46,14 @@ android {
         }
     }
     useLibrary 'org.apache.http.legacy'
+
+    packagingOptions {
+
+        /* should be excluded by default */
+
+        exclude '/META-INF/LICENSE'
+        exclude '/META-INF/LICENSE.txt'
+    }
 }
 
 dependencies {
