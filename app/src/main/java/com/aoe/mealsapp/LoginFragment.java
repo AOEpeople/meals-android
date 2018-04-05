@@ -1,6 +1,5 @@
 package com.aoe.mealsapp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,13 +20,28 @@ import android.widget.TextView;
  * Activity that is shown on first startup for the user to enter his credentials. Will be started
  * whenever the credentials become invalid.
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements View.OnClickListener {
+
+    //
+    // CONSTANTS
+    //
 
     private static final String TAG = "## " + LoginFragment.class.getSimpleName();
+
+    //
+    // STATIC
+    //
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
     }
+
+    //
+    // FIELDS & CONSTRUCTORS
+    //
+
+    private EditText editText_username;
+    private EditText editText_password;
 
     private OnFragmentInteractionListener onFragmentInteractionListener;
 
@@ -62,12 +76,15 @@ public class LoginFragment extends Fragment {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        /* autofill credentials */
+        /* set up UI widgets */
 
-        EditText editText_username = rootView.findViewById(R.id.loginFragment_editText_username);
-        EditText editText_password = rootView.findViewById(R.id.loginFragment_editText_password);
+        final Button button_login = rootView.findViewById(R.id.loginFragment_button_login);
+        button_login.setOnClickListener(this);
 
+        editText_username = rootView.findViewById(R.id.loginFragment_editText_username);
         editText_username.setText(sharedPreferences.getString(SharedPreferenceKeys.USERNAME, ""));
+
+        editText_password = rootView.findViewById(R.id.loginFragment_editText_password);
         editText_password.setText(sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, ""));
 
         /* set up last EditText to login on clicking the Done key */
@@ -82,41 +99,12 @@ public class LoginFragment extends Fragment {
                 boolean handled = false;
 
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    Button button_login = rootView.findViewById(R.id.loginFragment_button_login);
                     button_login.performClick();
 
                     handled = true;
                 }
 
                 return handled;
-            }
-        });
-
-        /* set up button */
-
-        Button button_login = rootView.findViewById(R.id.loginFragment_button_login);
-        button_login.setOnClickListener(new View.OnClickListener() {
-
-            @SuppressLint("ApplySharedPref")
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, Thread.currentThread().getName() + ": "
-                        + "onClick() called with: view = [" + view + "]");
-
-                /* save username, password in preferences & notify MainActivity about login */
-
-                SharedPreferences sharedPreferences
-                        = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-                EditText editText_username = rootView.findViewById(R.id.loginFragment_editText_username);
-                String username = editText_username.getText().toString();
-                sharedPreferences.edit().putString(SharedPreferenceKeys.USERNAME, username).commit();
-
-                EditText editText_password = rootView.findViewById(R.id.loginFragment_editText_password);
-                String password = editText_password.getText().toString();
-                sharedPreferences.edit().putString(SharedPreferenceKeys.PASSWORD, password).commit();
-
-                onFragmentInteractionListener.onLoginClicked();
             }
         });
 
@@ -130,6 +118,39 @@ public class LoginFragment extends Fragment {
                 + "onDetach() called");
 
         onFragmentInteractionListener = null;
+    }
+
+    //
+    // IMPLEMENTS View.OnClickListener
+    //
+
+    @Override
+    public void onClick(View view) {
+        Log.d(TAG, Thread.currentThread().getName() + ": "
+                + "onClick() called with: view = [" + view + "]");
+
+        switch (view.getId()) {
+            case R.id.loginFragment_button_login:
+                storeCredentialsAndNotifiyActivity();
+                break;
+        }
+    }
+
+    //
+    // HELPER
+    //
+
+    private void storeCredentialsAndNotifiyActivity() {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        String username = editText_username.getText().toString();
+        sharedPreferences.edit().putString(SharedPreferenceKeys.USERNAME, username).apply();
+
+        String password = editText_password.getText().toString();
+        sharedPreferences.edit().putString(SharedPreferenceKeys.PASSWORD, password).apply();
+
+        onFragmentInteractionListener.onLoginClicked();
     }
 
     //

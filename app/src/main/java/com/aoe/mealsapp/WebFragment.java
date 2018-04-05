@@ -59,6 +59,8 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
 
     private OnFragmentInteractionListener onFragmentInteractionListener;
 
+    // keep track of the values read from the default SharedPreferences last time
+    // to be able to recognize changes in onResume()
     private String lastUsername;
     private String lastPassword;
     private String lastLanguage;
