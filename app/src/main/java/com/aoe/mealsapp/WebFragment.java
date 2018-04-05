@@ -349,7 +349,7 @@ public class WebFragment extends Fragment
     public boolean onBackPressed() {
         if (webView.canGoBack()) {
             webView.goBack();
-            Log.d(TAG, "onBackPressed: ");
+
             return true;
         } else {
             return false;

@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Notifies the fragment that is on top of the fragment back stack if that fragment implements
      * {@link OnBackPressedListener}.
-     *
+     * <p>
      * To work, the fragment must have been added with it's tag name to the back stack. Might not
      * work if the fragment is contained multiple times in the back stack.
      */
@@ -39,14 +39,14 @@ public class MainActivity extends AppCompatActivity
         /* notify fragment & handle back press if not handled by fragment */
 
         if (topFragment instanceof OnBackPressedListener) {
-            boolean backPressedHandled = ((OnBackPressedListener)topFragment).onBackPressed();
+            boolean backPressedHandled = ((OnBackPressedListener) topFragment).onBackPressed();
 
-            // TODO optimize: avoid super.onBackPressed twice (?)
             if (!backPressedHandled) {
-                super.onBackPressed();
-
-                // no fragment left? close activity
-                if (fragmentManager.getBackStackEntryCount() == 0) {
+                if (fragmentManager.getBackStackEntryCount() == 1) {
+                    // close if only one fragment left
+                    // prevents the screen from going blank when last fragment would be removed
+                    finish();
+                } else {
                     super.onBackPressed();
                 }
             }
