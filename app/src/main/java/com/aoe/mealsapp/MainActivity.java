@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_frameLayout_fragmentContainer, loginFragment)
-                .addToBackStack(loginFragment.getClass().getCanonicalName())
+                .addToBackStack(null)
                 .commit();
     }
 
