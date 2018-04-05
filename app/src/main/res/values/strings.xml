@@ -2,11 +2,12 @@
 <resources>
     <string name="app_name">MealsApp</string>
 
+    <string name="loginActivity_toolbar_appBar_title">AOEMEALS</string>
+
     <string name="loginFragment_button_login_text">Login</string>
     <string name="loginFragment_editText_username_hint">john.doe</string>
     <string name="loginFragment_textView_password_text">Password</string>
     <string name="loginFragment_textView_username_text">Username</string>
-    <string name="loginActivity_toolbar_appBar_title">AOEMEALS</string>
 
     <string name="mainMenu_account_title">Account</string>
     <string name="mainMenu_settings_title">Settings</string>
@@ -27,7 +28,4 @@
     <string name="webActivity_toolbar_appBar_title">AOEMEALS</string>
 
     <string name="webFragment_toolbar_appBar_title">AOEMEALS</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

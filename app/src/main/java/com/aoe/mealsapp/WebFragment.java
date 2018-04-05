@@ -28,8 +28,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WebFragment extends Fragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener, OnBackPressedListener {
+public class WebFragment extends Fragment implements OnBackPressedListener {
 
     //
     // CONSTANTS
@@ -40,7 +39,7 @@ public class WebFragment extends Fragment
     private static final String PAGE_MAIN = BuildConfig.SERVER_URL;
     private static final String PAGE_LOGIN = BuildConfig.SERVER_URL + "/login";
     private static final String PAGE_TRANSACTIONS = BuildConfig.SERVER_URL + "/accounting/transactions";
-    private static final String PAGE_LANGUAGE_SWITCH = BuildConfig.SERVER_URL + "/lastLanguage-switch";
+    private static final String PAGE_LANGUAGE_SWITCH = BuildConfig.SERVER_URL + "/language-switch";
 
     private static final String HTTP_USER_AGENT = "MealsApp Android WebView";
 
@@ -95,7 +94,7 @@ public class WebFragment extends Fragment
                 + "onCreateView() called with: inflater = [" + inflater + "], container = [" + container
                 + "], savedInstanceState = [" + savedInstanceState + "]");
 
-        View rootView =  inflater.inflate(R.layout.fragment_web, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_web, container, false);
 
         /* set up app bar */
 
@@ -104,7 +103,7 @@ public class WebFragment extends Fragment
         AppCompatActivity appCompatActivity;
 
         if (fragmentActivity instanceof AppCompatActivity) {
-            appCompatActivity = (AppCompatActivity)fragmentActivity;
+            appCompatActivity = (AppCompatActivity) fragmentActivity;
         } else {
             throw new RuntimeException(fragmentActivity.toString() + " must extend AppCompatActivity");
         }
@@ -120,7 +119,18 @@ public class WebFragment extends Fragment
 
         /* load login page */
 
-        loadLoginPage();
+        // seems to be redundant with check for SharedPreference changes in onResume()
+        // however, leaving this out would lead the first check to assume that the credentials
+        // as well as the language changed (null -> something) so that the language would
+        // be switched unintentionally
+
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        lastUsername = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
+        lastPassword = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
+        lastLanguage = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
+
+        loadLoginPage(lastUsername, lastPassword);
 
         return rootView;
     }
@@ -186,19 +196,9 @@ public class WebFragment extends Fragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, Thread.currentThread().getName() + ": "
-                + "onPause() called");
-
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        /* stop listening to SharedPreference changes */
-
-        defaultSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-    }
-
+    /**
+     * Check for any changes made to the default SharedPreferences while this fragment was paused.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -207,56 +207,31 @@ public class WebFragment extends Fragment
 
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        /* check for changes in default SharedPreferences */
+        /* check for changes in default SharedPreferences & react if necessary */
 
         String preferenceUsername = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
         String preferencePassword = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
         String preferenceLanguage = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
 
-        assert preferenceLanguage != null;
+        assert preferenceLanguage != null; // initiated with default value, never set to null
 
-        boolean sameUsername = (lastUsername == null ? preferenceUsername == null : lastUsername.equals(preferenceUsername));
-        boolean samePassword = (lastPassword == null ? preferencePassword == null : lastPassword.equals(preferencePassword));
-        boolean sameLanguage = lastLanguage.equals(preferenceLanguage);
+        // two strings are both null or equal:   a == null ? b == null : a.equals(b)
+        boolean usernameChanged = !(preferenceUsername == null ? lastUsername == null : preferenceUsername.equals(lastUsername));
+        boolean passwordChanged = !(preferencePassword == null ? lastPassword == null : preferencePassword.equals(lastPassword));
+        boolean languageChanged = !preferenceLanguage.equals(lastLanguage);
 
         lastUsername = preferenceUsername;
         lastPassword = preferencePassword;
         lastLanguage = preferenceLanguage;
 
-        if (!sameUsername || !samePassword) {
-            refreshWebsite();
-        } else if (!sameLanguage) {
-            switchWebsiteLanguage();
-        }
+        if ((usernameChanged || passwordChanged) && languageChanged) {
+            loadLanguageSwitchPage(PAGE_LOGIN);
 
-        /* listen for changes in default SharedPreferences */
+        } else if (usernameChanged || passwordChanged) {
+            loadLoginPage(lastUsername, lastPassword);
 
-        defaultSharedPreferences.registerOnSharedPreferenceChangeListener(this);
-    }
-
-    //
-    // IMPLEMENTS SharedPreferences.OnSharedPreferenceChangeListener
-    //
-
-    /**
-     * Handle all settings changes that are relevant for this activity, i.e. the WebView (e.g.
-     * user credentials or website lastLanguage).
-     */
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(TAG, Thread.currentThread().getName() + ": "
-                + "onSharedPreferenceChanged() called with: sharedPreferences = ["
-                + sharedPreferences + "], key = [" + key + "]");
-
-        switch (key) {
-            case SharedPreferenceKeys.USERNAME:
-            case SharedPreferenceKeys.PASSWORD:
-                refreshWebsite();
-                break;
-
-            case SharedPreferenceKeys.LANGUAGE:
-                switchWebsiteLanguage();
-                break;
+        } else if (languageChanged) {
+            loadLanguageSwitchPage(webView.getUrl());
         }
     }
 
@@ -264,30 +239,15 @@ public class WebFragment extends Fragment
     // HELPER
     //
 
-    /**
-     * - open login page with credentials from preferences (send via POST)
-     */
-    private void loadLoginPage() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+    private void loadLanguageSwitchPage(String targetUrl) {
+        Map<String, String> additionalHttpHeaders = new HashMap<>();
+        additionalHttpHeaders.put("Referer", targetUrl);
+        webView.loadUrl(PAGE_LANGUAGE_SWITCH, additionalHttpHeaders);
+    }
 
-        lastUsername = sharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
-        lastPassword = sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
-        lastLanguage = sharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
-
-        String postUsername = lastUsername;
-        String postPassword = lastPassword;
-
-        if (lastUsername == null) {
-            Log.w(TAG, "onCreate: lastUsername == null. postUsername = \"\"");
-            postUsername = "";
-        }
-
-        if (lastPassword == null) {
-            Log.w(TAG, "onCreate: lastPassword == null. postPassword = \"\"");
-            postPassword = "";
-        }
-
-        String postData = "_username=" + postUsername + "&_password=" + postPassword;
+    private void loadLoginPage(String username, String password) {
+        String postData = "_username=" + (username == null ? "" : username)
+                + "&_password=" + (password == null ? "" : password);
         webView.postUrl(PAGE_LOGIN, postData.getBytes());
     }
 
@@ -326,19 +286,6 @@ public class WebFragment extends Fragment
                 }
             }
         });
-    }
-
-    private void refreshWebsite() {
-        String postData = "_username=" + lastUsername + "&_password=" + lastPassword;
-        Log.d(TAG, "refreshWebsite: !!!");
-        webView.postUrl(PAGE_LOGIN, postData.getBytes());
-    }
-
-    private void switchWebsiteLanguage() {
-        Map<String, String> additionalHttpHeaders = new HashMap<>();
-        additionalHttpHeaders.put("Referer", webView.getUrl());
-        Log.d(TAG, "switchWebsiteLanguage: !!!");
-        webView.loadUrl(PAGE_LANGUAGE_SWITCH, additionalHttpHeaders);
     }
 
     //
