@@ -40,8 +40,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private static final String NOTIFICATION_CHANNEL_MEALS = "notification_channel_meals";
     private static final int NOTIFICATION_ID = 1;
-    private static final String NOTIFICATION_TITLE = "Meals Check";
-    private static final String NOTIFICATION_TEXT = "Did you forget to register for meal tomorrow?";
 
     //
     // EXTENDS BroadcastReceiver
@@ -320,10 +318,13 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         // TODO add comments
 
+        String notificationTitle = context.getString(R.string.notification_title);
+        String notificationText = context.getString(R.string.notification_text);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_MEALS)
                 .setSmallIcon(android.R.drawable.sym_def_app_icon)
-                .setContentTitle(NOTIFICATION_TITLE)
-                .setContentText(NOTIFICATION_TEXT);
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationText);
 
         Intent resultIntent = new Intent(context, MainActivity.class);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
