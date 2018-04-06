@@ -13,12 +13,11 @@ import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.aoe.mealsapp.util.Config;
+
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.Properties;
 
 /**
  * Allows the user to change website language (German/English) and enable/disable the
@@ -126,12 +125,12 @@ public class SettingsFragment extends PreferenceFragment
         if (reminderFrequencyKey.equals(SharedPreferenceKeys.REMINDER_FREQUENCY__BEFORE_EVERY_WEEKDAY)
                 || reminderFrequencyKey.equals(SharedPreferenceKeys.REMINDER_FREQUENCY__BEFORE_MONDAY)) {
 
-            Calendar reminderTime = null;
+            Calendar reminderTime;
             try {
-                reminderTime = readReminderTimeFromConfigFile(context);
+                reminderTime = Config.readReminderTime(context);
+
             } catch (IOException | ParseException e) {
-                Log.e(TAG, "handleReminderFrequencyChange: Couln't read reminder time from" +
-                        "config file. No alarm set.");
+                Log.e(TAG, "handleReminderFrequencyChange: Couln't read reminder time fromconfig file. No alarm set.");
                 return;
             }
 
@@ -148,26 +147,6 @@ public class SettingsFragment extends PreferenceFragment
             alarmManager.cancel(alarmIntent);
             disableBootReceiver(context);
         }
-    }
-
-    private Calendar readReminderTimeFromConfigFile(Context context) throws IOException, ParseException {
-
-        Properties properties = new Properties();
-        properties.load(context.getResources().openRawResource(R.raw.config));
-
-        /* create Calendar object with today's date and config's time */
-
-        Calendar parsedTime = Calendar.getInstance();
-        DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
-        parsedTime.setTime(dateFormat.parse(properties.getProperty(PropertiesKeys.REMINDER_TIME)));
-
-        Calendar reminderTime = Calendar.getInstance();
-        reminderTime.set(Calendar.HOUR_OF_DAY, parsedTime.get(Calendar.HOUR_OF_DAY));
-        reminderTime.set(Calendar.MINUTE, parsedTime.get(Calendar.MINUTE));
-        reminderTime.set(Calendar.SECOND, parsedTime.get(Calendar.SECOND));
-        reminderTime.set(Calendar.MILLISECOND, parsedTime.get(Calendar.MILLISECOND));
-
-        return reminderTime;
     }
 
     private void enableBootReceiver(Context context) {

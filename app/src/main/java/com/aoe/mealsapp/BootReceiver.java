@@ -7,12 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.aoe.mealsapp.util.Config;
+
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.Properties;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -30,30 +29,14 @@ public class BootReceiver extends BroadcastReceiver {
 
         if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
 
-            /* read reminderTime from config.properties */
+            /* read reminderTime from config file */
 
             Calendar reminderTime;
             try {
-                Properties properties = new Properties();
-                properties.load(context.getResources().openRawResource(R.raw.config));
+                reminderTime = Config.readReminderTime(context);
 
-                /* create calendar with today's date and config time */
-
-                Calendar parsedTime = Calendar.getInstance();
-                DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
-                parsedTime.setTime(dateFormat.parse(properties.getProperty(PropertiesKeys.REMINDER_TIME)));
-
-                reminderTime = Calendar.getInstance();
-                reminderTime.set(Calendar.HOUR_OF_DAY, parsedTime.get(Calendar.HOUR_OF_DAY));
-                reminderTime.set(Calendar.MINUTE, parsedTime.get(Calendar.MINUTE));
-                reminderTime.set(Calendar.SECOND, parsedTime.get(Calendar.SECOND));
-                reminderTime.set(Calendar.MILLISECOND, parsedTime.get(Calendar.MILLISECOND));
-
-            } catch (IOException e) {
-                Log.e(TAG, "onReceive: IOException. No alarm set.", e);
-                return;
-            } catch (ParseException e) {
-                Log.e(TAG, "onReceive: ParseException. No alarm set.", e);
+            } catch (IOException | ParseException e) {
+                Log.e(TAG, "onReceive: Couln't read reminder time from config file. No alarm set.");
                 return;
             }
 
