@@ -145,10 +145,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         String username = editText_username.getText().toString();
-        sharedPreferences.edit().putString(SharedPreferenceKeys.USERNAME, username).apply();
-
         String password = editText_password.getText().toString();
-        sharedPreferences.edit().putString(SharedPreferenceKeys.PASSWORD, password).apply();
+
+        sharedPreferences.edit()
+                .putString(SharedPreferenceKeys.USERNAME, username)
+                .putString(SharedPreferenceKeys.PASSWORD, password)
+                .apply();
 
         onFragmentInteractionListener.onLoginClicked();
     }
