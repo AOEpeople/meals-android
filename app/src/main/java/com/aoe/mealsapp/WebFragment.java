@@ -276,15 +276,8 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
 
                 /* unexpected page (e.g. login because bad credentials) -> notify MainActivity */
 
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
                 if (!(url.equals(PAGE_MAIN) || url.equals(PAGE_TRANSACTIONS))) {
-                    sharedPreferences.edit().putBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, false).apply();
-
                     onFragmentInteractionListener.onLoginFailed();
-
-                } else {
-                    sharedPreferences.edit().putBoolean(SharedPreferenceKeys.CREDENTIALS_WERE_VALIDATED, true).apply();
                 }
             }
         });

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 class SharedPreferenceKeys {
-    static final String CREDENTIALS_WERE_VALIDATED = "preferences_credentialsWereValidated";
     static final String LANGUAGE = "preferences_language";
     static final String LANGUAGE__ENGLISH = "preferences_language_entryValues_english";
     static final String LANGUAGE__GERMAN = "preferences_language_entryValues_german";
