@@ -113,7 +113,7 @@ public class SettingsFragment extends PreferenceFragment
         /* set/cancel alarm & enable/disable boot receiver */
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager == null) {
+        if (alarmManager == null) { // should not happen
             Log.e(TAG, "handleReminderFrequencyChange: Couldn't get AlarmManager. No alarm set.");
             return;
         }
