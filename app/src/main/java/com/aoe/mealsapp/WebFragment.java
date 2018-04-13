@@ -59,11 +59,13 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
 
     private OnFragmentInteractionListener onFragmentInteractionListener;
 
+    private SharedPreferences defaultSharedPreferences;
+
     // keep track of the values read from the default SharedPreferences last time
     // to be able to recognize changes in onResume()
-    private String lastUsername;
-    private String lastPassword;
-    private String lastLanguage;
+    private String lastUsernamePreference;
+    private String lastPasswordPreference;
+    private String lastLanguagePreference;
 
     //
     // CONSTRUCTORS
@@ -126,13 +128,11 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
         // as well as the language changed (null -> something) so that the language would
         // be switched unintentionally
 
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        lastUsernamePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
+        lastPasswordPreference = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
+        lastLanguagePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
 
-        lastUsername = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
-        lastPassword = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
-        lastLanguage = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
-
-        loadLoginPage(lastUsername, lastPassword);
+        loadLoginPage(lastUsernamePreference, lastPasswordPreference);
 
         return rootView;
     }
@@ -144,6 +144,8 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
                 + "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
 
         setHasOptionsMenu(true);
+
+        defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
     }
 
     @Override
@@ -207,30 +209,17 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
         Log.d(TAG, Thread.currentThread().getName() + ": "
                 + "onResume() called");
 
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
         /* check for changes in default SharedPreferences & react if necessary */
 
-        String preferenceUsername = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
-        String preferencePassword = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
-        String preferenceLanguage = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
-
-        assert preferenceLanguage != null; // initiated with default value, never set to null
-
-        // two strings are both null or equal:   a == null ? b == null : a.equals(b)
-        boolean usernameChanged = !(preferenceUsername == null ? lastUsername == null : preferenceUsername.equals(lastUsername));
-        boolean passwordChanged = !(preferencePassword == null ? lastPassword == null : preferencePassword.equals(lastPassword));
-        boolean languageChanged = !preferenceLanguage.equals(lastLanguage);
-
-        lastUsername = preferenceUsername;
-        lastPassword = preferencePassword;
-        lastLanguage = preferenceLanguage;
+        boolean usernameChanged = usernamePreferenceChanged();
+        boolean passwordChanged = passwordPreferenceChanged();
+        boolean languageChanged = languagePreferenceChanged();
 
         if ((usernameChanged || passwordChanged) && languageChanged) {
             loadLanguageSwitchPage(PAGE_LOGIN);
 
         } else if (usernameChanged || passwordChanged) {
-            loadLoginPage(lastUsername, lastPassword);
+            loadLoginPage(lastUsernamePreference, lastPasswordPreference);
 
         } else if (languageChanged) {
             loadLanguageSwitchPage(webView.getUrl());
@@ -240,6 +229,75 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     //
     // HELPER
     //
+
+    /**
+     * Reads the username from the default SharedPreferences and compares it with the one read
+     * last time. If it hasn't been read before it's compared with null. Finally, saves the
+     * current value.
+     *
+     * @return True if the username read from the default SharedPreferences has
+     * changed since the last time. False otherwise.
+     *
+     * The current value and the old one are considered to be equal if String.equals() yields true
+     * or if both are null.
+     */
+    private boolean usernamePreferenceChanged() {
+        String currentUsernamePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
+
+        boolean usernamePreferenceChanged = !(currentUsernamePreference == null ?
+                lastUsernamePreference == null
+                : currentUsernamePreference.equals(lastUsernamePreference));
+
+        lastUsernamePreference = currentUsernamePreference;
+
+        return usernamePreferenceChanged;
+    }
+
+    /**
+     * Reads the password from the default SharedPreferences and compares it with the one read
+     * last time. If it hasn't been read before it's compared with null. Finally, saves the
+     * current value.
+     *
+     * @return True if the password read from the default SharedPreferences has
+     * changed since the last time. False otherwise.
+     *
+     * The current value and the old one are considered to be equal if String.equals() yields true
+     * or if both are null.
+     */
+    private boolean passwordPreferenceChanged() {
+        String currentPasswordPreference = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
+
+        boolean passwordPreferenceChanged = !(currentPasswordPreference == null ?
+                lastPasswordPreference == null
+                : currentPasswordPreference.equals(lastPasswordPreference));
+
+        lastPasswordPreference = currentPasswordPreference;
+
+        return passwordPreferenceChanged;
+    }
+
+    /**
+     * Reads the language from the default SharedPreferences and compares it with the one read
+     * last time. If it hasn't been read before it's compared with null. Finally, saves the
+     * current value.
+     *
+     * @return True if the language read from the default SharedPreferences has
+     * changed since the last time. False otherwise.
+     *
+     * The current value and the old one are considered to be equal if String.equals() yields true
+     * or if both are null.
+     */
+    private boolean languagePreferenceChanged() {
+        String currentLanguagePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
+
+        boolean languagePreferenceChanged = !(currentLanguagePreference == null ?
+                lastLanguagePreference == null
+                : currentLanguagePreference.equals(lastLanguagePreference));
+
+        lastLanguagePreference = currentLanguagePreference;
+
+        return languagePreferenceChanged;
+    }
 
     private void loadLanguageSwitchPage(String targetUrl) {
         Map<String, String> additionalHttpHeaders = new HashMap<>();
