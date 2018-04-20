@@ -30,3 +30,5 @@ Alternatively one might have chosen to only set alarms for days on which the ser
 So, it's super simple: The alarm fires every day. Then, it's determined based on the set reminder frequency whether the server is requested or not.
 
 Finally, if the app is first started or the device booted after the set reminder time the reminder functionality will still be executed if the latest possible reminder time (shortly before the registration period ends) hasn't passed, yet.
+
+Note: On Android, especially on the latest versions, alarms are inexact by design so that the system can batch alarms that are timed close to each other to reduce energy consumption. In theory an inexact alarm can be triggered up 150% too late (i.e. an alarm set to be triggered in one day might be triggered after 2.5 days). In practice alarms are delayed at most by 10-15 minutes.
