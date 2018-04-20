@@ -10,7 +10,7 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity
         implements WebFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener {
 
-    private static final String TAG = "## " + MainActivity.class.getSimpleName();
+    private static final String TAG = "MainActivity";
 
     //
     // EXTENDS AppCompatActivity
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onBackPressed() {
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onBackPressed() called");
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
 
         setContentView(R.layout.activity_main);
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoginFailed() {
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onLoginFailed() called");
 
         LoginFragment loginFragment = LoginFragment.newInstance();

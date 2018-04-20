@@ -35,7 +35,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     // CONSTANTS
     //
 
-    private static final String TAG = "## " + WebFragment.class.getSimpleName();
+    private static final String TAG = "WebFragment";
 
     private static final String PAGE_MAIN = BuildConfig.SERVER_URL;
     private static final String PAGE_LOGIN = BuildConfig.SERVER_URL + "/login";
@@ -83,7 +83,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onAttach() called with: context = [" + context + "]");
 
         if (context instanceof OnFragmentInteractionListener) {
@@ -95,7 +95,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onCreateView() called with: inflater = [" + inflater + "], container = [" + container
                 + "], savedInstanceState = [" + savedInstanceState + "]");
 
@@ -141,7 +141,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
 
         setHasOptionsMenu(true);
@@ -152,7 +152,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onCreateOptionsMenu() called with: menu = [" + menu + "], inflater = [" + inflater + "]");
 
         inflater.inflate(R.menu.menu_main, menu);
@@ -161,7 +161,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onDetach() called");
 
         onFragmentInteractionListener = null;
@@ -169,7 +169,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onOptionsItemSelected() called with: item = [" + item + "]");
 
         int optionsItemId = item.getItemId();
@@ -178,7 +178,8 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
             case R.id.mainMenu_alarm:
                 AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
                 if (alarmManager == null) {
-                    Log.e(TAG, "onOptionsItemSelected: Couldn't get AlarmManager. No alarm set.");
+                    Log.e(TAG, Thread.currentThread().getName() + " ### "
+                            + "onOptionsItemSelected: Couldn't get AlarmManager. No alarm set.");
                     return true;
                 }
 
@@ -207,7 +208,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onResume() called");
 
         /* check for changes in default SharedPreferences & react if necessary */
@@ -320,7 +321,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Log.d(TAG, Thread.currentThread().getName() + ": "
+                Log.d(TAG, Thread.currentThread().getName() + " ### "
                         + "onPageFinished() called with: view = [" + view + "], url = [" + url + "]");
 
                 /* remove trailing slash from URL */
@@ -342,6 +343,9 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
 
     @Override
     public boolean onBackPressed() {
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
+                + "onBackPressed() called");
+
         if (webView.canGoBack()) {
             webView.goBack();
 

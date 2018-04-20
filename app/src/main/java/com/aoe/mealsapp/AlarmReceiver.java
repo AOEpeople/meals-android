@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class AlarmReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "## " + AlarmReceiver.class.getSimpleName();
+    private static final String TAG = "AlarmReceiver";
 
     private static final String OAUTH_CLIENT_ID = BuildConfig.OAUTH_CLIENT_ID;
     private static final String OAUTH_CLIENT_SECRET = BuildConfig.OAUTH_CLIENT_SECRET;
@@ -59,8 +59,28 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(final Context context, Intent intent) {
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onReceive() called with: context = [" + context + "], intent = [" + intent + "]");
+
+        /* if received after latest reminder time: ignore */
+
+        Calendar now = Calendar.getInstance();
+        Calendar latestReminderTime;
+
+        try {
+            latestReminderTime = Config.readLatestReminderTime(context);
+
+        } catch (IOException | ParseException e) {
+            Log.e(TAG, Thread.currentThread().getName() + " ### "
+                    + "onReceive: Couldn't read latest reminder time from config file. No alarm set.", e);
+            return;
+        }
+
+        if (now.getTimeInMillis() > latestReminderTime.getTimeInMillis()) {
+            return;
+        }
+
+        /* if user wants to be notified: request server */
 
         if (userWantsToBeNotifiedForTomorrow(context)) {
 
@@ -69,7 +89,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 public void accept(Boolean userParticipatesTomorrow) {
 
                     if (userParticipatesTomorrow == null) {
-                        Log.e(TAG, "accept: Failed to request server. Aborting user notification.");
+                        Log.e(TAG, Thread.currentThread().getName() + " ### "
+                                + "accept: Couldn't request server. Aborting user notification.");
 
                         /* try again every 5min within one hour after the planned alarm */
 
@@ -83,8 +104,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                                 /* set alarm in 5min */
 
                                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                                if (alarmManager == null) {
-                                    Log.e(TAG, "accept: alarmManager == null. No alarm set.");
+                                if (alarmManager == null) { // should probably never happen
+                                    Log.e(TAG, Thread.currentThread().getName() + " ### "
+                                            + "accept: Couldn't retrieve AlarmManager. No alarm set.");
                                     return;
                                 }
 
@@ -95,7 +117,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                             }
 
                         } catch (IOException | ParseException e) {
-                            Log.e(TAG, "onReceive: Couln't read reminder time from config file. No alarm set.");
+                            Log.e(TAG, Thread.currentThread().getName() + " ### "
+                                    + "accept: Couldn't read reminder time from config file. No alarm set.", e);
                             return;
                         }
 
@@ -130,8 +153,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (reminderFrequencyKey == null) {
             // TODO review: should never happen
-            Log.e(TAG, "userWantsToBeNotifiedForTomorrow: Cannot read reminder frequency " +
-                    "from shared preferences. Return false.");
+            Log.e(TAG, Thread.currentThread().getName() + " ### "
+                    + "userWantsToBeNotifiedForTomorrow: Couldn't read reminder frequency from "
+                    + "shared preferences. Return false.");
             return false;
         }
 
@@ -203,7 +227,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String loginResponse) {
-                        Log.d(TAG, Thread.currentThread().getName() + ": "
+                        Log.d(TAG, Thread.currentThread().getName() + " ### "
                                 + "onResponse() called with: loginResponse = [" + loginResponse + "]");
 
                         /* proceed: extract access token and GET current week data */
@@ -213,7 +237,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                             getCurrentWeekAndProceed(requestQueue, resultConsumer, token);
 
                         } catch (JSONException e) {
-                            Log.e(TAG, "accept: Login failed. Returning null.", e);
+                            Log.e(TAG, Thread.currentThread().getName() + " ### "
+                                    + "onResponse: Couldn't login. Returning null.", e);
                             resultConsumer.accept(null);
                         }
                     }
@@ -221,10 +246,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, Thread.currentThread().getName() + ": "
+                        Log.d(TAG, Thread.currentThread().getName() + " ### "
                                 + "onErrorResponse() called with: error = [" + error + "]");
 
-                        Log.e(TAG, "onErrorResponse: Login failed. Returning null.");
+                        Log.e(TAG, Thread.currentThread().getName() + " ### "
+                                + "onErrorResponse: Couldn't login. Returning null.");
                         resultConsumer.accept(null);
                     }
                 }
@@ -276,8 +302,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String currentWeekResponse) {
-                        Log.d(TAG, Thread.currentThread().getName() + ": "
-                                + "onResponse() called with: response = [" + currentWeekResponse + "]");
+                        Log.d(TAG, Thread.currentThread().getName() + " ### "
+                                + "onResponse() called with: currentWeekResponse = [" + currentWeekResponse + "]");
 
                         /* proceed: determine participation and send result to original caller via callback */
 
@@ -286,7 +312,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                             resultConsumer.accept(isParticipating);
 
                         } catch (JSONException e) {
-                            Log.e(TAG, "accept: Login failed. Response doesn't contain participation field. Cannot notify user.", e);
+                            Log.e(TAG, Thread.currentThread().getName() + " ### "
+                                    + "onResponse: Login failed. Response doesn't contain participation field. "
+                                    + "Cannot notify user.", e);
                             resultConsumer.accept(null);
                         }
                     }
@@ -294,10 +322,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, Thread.currentThread().getName() + ": "
+                        Log.d(TAG, Thread.currentThread().getName() + " ### "
                                 + "onErrorResponse() called with: error = [" + error + "]");
 
-                        Log.e(TAG, "onErrorResponse: Receiving current week failed. Returning null.");
+                        Log.e(TAG, Thread.currentThread().getName() + " ### "
+                                + "onErrorResponse: Couldn't receive current week. Returning null.");
                         resultConsumer.accept(null);
                     }
                 }
@@ -328,7 +357,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         tomorrow.add(Calendar.DAY_OF_WEEK, 1);
         int dayOfWeek = (tomorrow.get(Calendar.DAY_OF_WEEK) - 2 + 7) % 7; // Sun = 1 -> Mon = 0
 
-        if (dayOfWeek > 4) {
+        if (dayOfWeek == 4 || dayOfWeek == 5) {
             return false;
         }
 

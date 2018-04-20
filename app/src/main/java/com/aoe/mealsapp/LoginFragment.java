@@ -26,7 +26,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     // CONSTANTS
     //
 
-    private static final String TAG = "## " + LoginFragment.class.getSimpleName();
+    private static final String TAG = "LoginFragment";
 
     //
     // STATIC
@@ -56,7 +56,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onAttach() called with: context = [" + context + "]");
 
         if (context instanceof OnFragmentInteractionListener) {
@@ -68,7 +68,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onCreateView() called with: inflater = [" + inflater + "], container = [" + container
                 + "], savedInstanceState = [" + savedInstanceState + "]");
 
@@ -92,7 +92,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         editText_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                Log.d(TAG, Thread.currentThread().getName() + ": "
+                Log.d(TAG, Thread.currentThread().getName() + " ### "
                         + "onEditorAction() called with: textView = [" + textView + "], actionId = ["
                         + actionId + "], keyEvent = [" + keyEvent + "]");
 
@@ -114,7 +114,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onDetach() called");
 
         onFragmentInteractionListener = null;
@@ -126,7 +126,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Log.d(TAG, Thread.currentThread().getName() + ": "
+        Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onClick() called with: view = [" + view + "]");
 
         switch (view.getId()) {
