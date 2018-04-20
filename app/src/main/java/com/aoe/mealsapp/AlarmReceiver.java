@@ -1,5 +1,6 @@
 package com.aoe.mealsapp;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -18,11 +19,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.aoe.mealsapp.util.Config;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +54,8 @@ public class AlarmReceiver extends BroadcastReceiver {
      * - check settings: Does user want to be notified?
      * - if so: ask server for participation
      * - if user does not yet participate: notify him
+     *
+     * If the server is not available: retry every 5min within one hour after the planned request.
      */
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -64,6 +70,35 @@ public class AlarmReceiver extends BroadcastReceiver {
 
                     if (userParticipatesTomorrow == null) {
                         Log.e(TAG, "accept: Failed to request server. Aborting user notification.");
+
+                        /* try again every 5min within one hour after the planned alarm */
+
+                        try {
+                            Calendar reminderTime = Config.readReminderTime(context);
+                            Calendar now = Calendar.getInstance();
+
+                            long minutesSincePlannedTime = (reminderTime.getTimeInMillis() - now.getTimeInMillis()) / 1000 / 60;
+                            if (minutesSincePlannedTime < 60) {
+
+                                /* set alarm in 5min */
+
+                                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                                if (alarmManager == null) {
+                                    Log.e(TAG, "accept: alarmManager == null. No alarm set.");
+                                    return;
+                                }
+
+                                PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 1,
+                                        new Intent(context, AlarmReceiver.class), 0);
+                                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                                        now.getTimeInMillis() + 1000 * 60 * 5, alarmIntent);
+                            }
+
+                        } catch (IOException | ParseException e) {
+                            Log.e(TAG, "onReceive: Couln't read reminder time from config file. No alarm set.");
+                            return;
+                        }
+
                         return;
                     }
 
@@ -292,6 +327,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DAY_OF_WEEK, 1);
         int dayOfWeek = (tomorrow.get(Calendar.DAY_OF_WEEK) - 2 + 7) % 7; // Sun = 1 -> Mon = 0
+
+        if (dayOfWeek > 4) {
+            return false;
+        }
 
         /* search JSON object for any meal participation tomorrow */
 

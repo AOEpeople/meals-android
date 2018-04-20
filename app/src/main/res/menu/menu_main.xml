@@ -6,7 +6,7 @@
     <item
         android:id="@+id/mainMenu_alarm"
         android:title="ALARM"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="ifRoom" />
 
     <item

@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -244,9 +245,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     private boolean usernamePreferenceChanged() {
         String currentUsernamePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
 
-        boolean usernamePreferenceChanged = !(currentUsernamePreference == null ?
-                lastUsernamePreference == null
-                : currentUsernamePreference.equals(lastUsernamePreference));
+        boolean usernamePreferenceChanged = !TextUtils.equals(currentUsernamePreference, lastUsernamePreference);
 
         lastUsernamePreference = currentUsernamePreference;
 
@@ -267,9 +266,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     private boolean passwordPreferenceChanged() {
         String currentPasswordPreference = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
 
-        boolean passwordPreferenceChanged = !(currentPasswordPreference == null ?
-                lastPasswordPreference == null
-                : currentPasswordPreference.equals(lastPasswordPreference));
+        boolean passwordPreferenceChanged = !TextUtils.equals(currentPasswordPreference, lastPasswordPreference);
 
         lastPasswordPreference = currentPasswordPreference;
 
@@ -290,9 +287,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     private boolean languagePreferenceChanged() {
         String currentLanguagePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
 
-        boolean languagePreferenceChanged = !(currentLanguagePreference == null ?
-                lastLanguagePreference == null
-                : currentLanguagePreference.equals(lastLanguagePreference));
+        boolean languagePreferenceChanged = !TextUtils.equals(currentLanguagePreference, lastLanguagePreference);
 
         lastLanguagePreference = currentLanguagePreference;
 
