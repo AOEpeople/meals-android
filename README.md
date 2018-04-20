@@ -3,6 +3,8 @@ Android wrapper for the web app
 
 # Architecture
 
+## Overview
+
 The most important components of the app are the activities (MainActivity, SettingsActivity), the BroadcastReceivers (AlarmReceiver, BootReceiver) and the SharedPreferences store.
 
 The MainActivity normally holds the WebFragment which contains a WebView that displays the Meals web app. It is loaded when the user starts the app and gets the user's credentials from the SharedPreference store. If no credentials exist or the existing credentials are invalid the LoginFragment is presented to the user.
@@ -17,7 +19,7 @@ Because all alarms removed when the device reboots the BootReceiver will set the
 
 Any preference changes are stored in the app's default SharedPreferences. The WebFragment checks these for changes when it resumes and reloads the web page accordingly.
 
-# Alarm
+## Alarm
 
 The app sets an alarm that is triggered daily at a pre-set reminder time which is defined in the config file. It is set to some hours before the registration period ends.
 
@@ -32,3 +34,22 @@ So, it's super simple: The alarm fires every day. Then, it's determined based on
 Finally, if the app is first started or the device booted after the set reminder time the reminder functionality will still be executed if the latest possible reminder time (shortly before the registration period ends) hasn't passed, yet.
 
 Note: On Android, especially on the latest versions, alarms are inexact by design so that the system can batch alarms that are timed close to each other to reduce energy consumption. In theory an inexact alarm can be triggered up 150% too late (i.e. an alarm set to be triggered in one day might be triggered after 2.5 days). In practice alarms are delayed at most by 10-15 minutes.
+
+# Coding Guidelines
+
+## Logging
+
+To faciliate debugging every method that is invoked by the operating system logs the current thread, its name and its parameters. The only exception are methods that would obviously flood the log file like RecyclerView.Adapter.getItemCount().
+
+For this purpose Android Studio provides Live Templates like 'logm' which generates code like this:
+
+    Log.d(TAG, "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
+
+This project uses extended versions of these Live Templates that include the information on which thread the method is called. The previous 'logm' example is extended to 'logmt' that produces the following code:
+
+    Log.d(TAG, Thread.currentThread().getName() + " ### "
+                + "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
+                
+The same applies to the other Live Templates ('logd' becomes 'logdt', 'loge' becomes 'loget', etc.)
+
+Note that the thread name is separated from the method information by the sequence '###'. This allows for easily filtering the log to effectively hide system log entries.
