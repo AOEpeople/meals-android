@@ -35,6 +35,18 @@ Finally, if the app is first started or the device booted after the set reminder
 
 Note: On Android, especially on the latest versions, alarms are inexact by design so that the system can batch alarms that are timed close to each other to reduce energy consumption. In theory an inexact alarm can be triggered up 150% too late (i.e. an alarm set to be triggered in one day might be triggered after 2.5 days). In practice alarms are delayed at most by 10-15 minutes.
 
+## Server Request
+
+When the alarm is triggered the app checks whether the user wants to be notified for the next day. If the next day is a weekday and the user set a reminder frequency that covers the next day this will be true.
+
+In that case the app sends two server requests to determine whether the user is already registered for tomorrows meal:
+1. A POST login request to receive a valid OAuth token
+2. A GET current-week request (with the token) to receive the user's meal participation for the next week(s)
+
+The app then extracts the participation value for the next day and notifies the user if it's false.
+
+If a problem occurs when contacting the server, for example if the server is not available because the device is not connected to the network, the app will try to contact the server again every 5 minutes until it succeeds or the latest reminder time is passed.
+
 # Coding Guidelines
 
 ## Logging
@@ -53,3 +65,11 @@ This project uses extended versions of these Live Templates that include the inf
 The same applies to the other Live Templates ('logd' becomes 'logdt', 'loge' becomes 'loget', etc.)
 
 Note that the thread name is separated from the method information by the sequence '###'. This allows for easily filtering the log to effectively hide system log entries.
+
+Also, every exception is logged using 'loget':
+
+    } catch (IOException | ParseException e) {
+        Log.e(TAG, Thread.currentThread().getName() + " ### "
+                + "accept: Couldn't read reminder time from config file. No alarm set.", e);
+        return;
+    }
