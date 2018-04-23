@@ -16,6 +16,9 @@ public class Alarm {
 
     private static final String TAG = "Alarm";
 
+    private static final int REQUEST_CODE_DAILY_ALARM = 1;
+    private static final int REQUEST_CODE_RETRY_ALARM = 2;
+
     /**
      * Sets a daily alarm at the reminder time defined in the config file
      */
@@ -25,7 +28,7 @@ public class Alarm {
 
         Calendar reminderTime;
         try {
-            reminderTime = Config.readReminderTime(context);
+            reminderTime = Config.readTime(context, Config.REMINDER_TIME);
 
         } catch (IOException | ParseException e) {
             Log.e(TAG, Thread.currentThread().getName() + " ### "
@@ -42,10 +45,24 @@ public class Alarm {
             return;
         }
 
-        int REQUEST_CODE_DAILY_ALARM = 0;
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_DAILY_ALARM,
                 new Intent(context, AlarmReceiver.class), 0);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 reminderTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);    
+    }
+
+    public static void setRetryAlarm(Context context) {
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) { // should probably never happen
+            Log.e(TAG, Thread.currentThread().getName() + " ### "
+                    + "accept: Couldn't retrieve AlarmManager. No alarm set.");
+            return;
+        }
+
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_RETRY_ALARM,
+                new Intent(context, AlarmReceiver.class), 0);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,
+                Calendar.getInstance().getTimeInMillis() + 1000 * 60 * 5, alarmIntent);
     }
 }

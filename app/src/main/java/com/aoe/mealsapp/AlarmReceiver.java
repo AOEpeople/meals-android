@@ -1,6 +1,5 @@
 package com.aoe.mealsapp;
 
-import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -19,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.aoe.mealsapp.util.Alarm;
 import com.aoe.mealsapp.util.Config;
 
 import org.json.JSONArray;
@@ -68,7 +68,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Calendar latestReminderTime;
 
         try {
-            latestReminderTime = Config.readLatestReminderTime(context);
+            latestReminderTime = Config.readTime(context, Config.LATEST_REMINDER_TIME);
 
         } catch (IOException | ParseException e) {
             Log.e(TAG, Thread.currentThread().getName() + " ### "
@@ -77,6 +77,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         if (now.getTimeInMillis() > latestReminderTime.getTimeInMillis()) {
+            Log.d(TAG, Thread.currentThread().getName() + " ### "
+                    + "onReceive: TOO LATE");
             return;
         }
 
@@ -89,31 +91,18 @@ public class AlarmReceiver extends BroadcastReceiver {
                 public void accept(Boolean userParticipatesTomorrow) {
 
                     if (userParticipatesTomorrow == null) {
-                        Log.e(TAG, Thread.currentThread().getName() + " ### "
-                                + "accept: Couldn't request server. Aborting user notification.");
+                        Log.w(TAG, Thread.currentThread().getName() + " ### "
+                                + "accept: Couldn't request server. Retry if latest reminder time hasn't passed, yet.");
 
-                        /* try again every 5min within one hour after the planned alarm */
+                        /* try again as long as the latest reminder time hasn't passed */
 
                         try {
-                            Calendar reminderTime = Config.readReminderTime(context);
                             Calendar now = Calendar.getInstance();
+                            Calendar latestReminderTime = Config.readTime(context, Config.LATEST_REMINDER_TIME);
 
-                            long minutesSincePlannedTime = (reminderTime.getTimeInMillis() - now.getTimeInMillis()) / 1000 / 60;
-                            if (minutesSincePlannedTime < 60) {
+                            if (now.getTimeInMillis() < latestReminderTime.getTimeInMillis()) {
 
-                                /* set alarm in 5min */
-
-                                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                                if (alarmManager == null) { // should probably never happen
-                                    Log.e(TAG, Thread.currentThread().getName() + " ### "
-                                            + "accept: Couldn't retrieve AlarmManager. No alarm set.");
-                                    return;
-                                }
-
-                                PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 1,
-                                        new Intent(context, AlarmReceiver.class), 0);
-                                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                                        now.getTimeInMillis() + 1000 * 60 * 5, alarmIntent);
+                                Alarm.setRetryAlarm(context);
                             }
 
                         } catch (IOException | ParseException e) {
