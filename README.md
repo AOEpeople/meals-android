@@ -23,11 +23,11 @@ Any preference changes are stored in the app's default SharedPreferences. The We
 
 The app sets an alarm that is triggered daily at a pre-set reminder time which is defined in the config file. It is set to some hours before the registration period ends.
 
-The alarm is set on the first app startup. As alarms are deleted when the system reboots the alarm is also set after booting.
+The alarm is set on the first app startup (App.onCreate()). As alarms are deleted when the system reboots the alarm is also set after booting (BootReceiver.onReceive()).
 
 As a consequence not every triggered alarm will lead to a server request depending on the user's setting for the reminder frequency. If the user decides that he doesn't want to be notified at all then nothing will be done on any day's alarm.
 
-Alternatively one might have chosen to only set alarms for days on which the server needs to be requested. In that case, however, multiple, weekly alarms would have to be set to cover reminder frequencies like "before every weekday" which would make the code more complicated. For the same reason the daily alarm isn't deactivated when the user choses "never" as the reminder frequency.
+Alternatively one might have chosen to only set alarms for days on which the server needs to be requested. In that case, however, multiple, weekly alarms would have to be set to cover reminder frequencies like "before every weekday" which would make the code more complicated. For the same reason the daily alarm isn't deactivated when the user choses "never" as the reminder frequency. This might be improved by using a JobScheduler (https://developer.android.com/topic/performance/scheduling.html) when targeting API level 21+.
 
 So, it's super simple: The alarm fires every day. Then, it's determined based on the set reminder frequency whether the server is requested or not.
 
