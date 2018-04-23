@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity
                     super.onBackPressed();
                 }
             }
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -87,12 +89,13 @@ public class MainActivity extends AppCompatActivity
                 + "onLoginFailed() called");
 
         LoginFragment loginFragment = LoginFragment.newInstance();
+        String fragmentTag = loginFragment.getClass().getCanonicalName();
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mainActivity_frameLayout_fragmentContainer, loginFragment)
-                .addToBackStack(null)
-                .commit();
+                .replace(R.id.mainActivity_frameLayout_fragmentContainer, loginFragment, fragmentTag)
+                .addToBackStack(fragmentTag)
+                .commitAllowingStateLoss();
     }
 
     //
@@ -104,4 +107,8 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().popBackStack();
     }
 
+    @Override
+    public void onLeaveLogin() {
+        finish();
+    }
 }

@@ -324,14 +324,18 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
                 Log.d(TAG, Thread.currentThread().getName() + " ### "
                         + "onPageFinished() called with: view = [" + view + "], url = [" + url + "]");
 
-                /* remove trailing slash from URL */
+                // ignore if activity has been destroyed
+                if (onFragmentInteractionListener != null) {
 
-                url = url.replaceAll("/$", "");
+                    /* remove trailing slash from URL */
 
-                /* unexpected page (e.g. login because bad credentials) -> notify MainActivity */
+                    url = url.replaceAll("/$", "");
 
-                if (!(url.equals(PAGE_MAIN) || url.equals(PAGE_TRANSACTIONS))) {
-                    onFragmentInteractionListener.onLoginFailed();
+                    /* unexpected page (e.g. login because bad credentials) -> notify MainActivity */
+
+                    if (!(url.equals(PAGE_MAIN) || url.equals(PAGE_TRANSACTIONS))) {
+                        onFragmentInteractionListener.onLoginFailed();
+                    }
                 }
             }
         });

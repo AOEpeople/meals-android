@@ -20,7 +20,7 @@ import android.widget.TextView;
  * Activity that is shown on first startup for the user to enter his credentials. Will be started
  * whenever the credentials become invalid.
  */
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment implements View.OnClickListener, OnBackPressedListener {
 
     //
     // CONSTANTS
@@ -156,10 +156,22 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     //
+    // IMPLEMENTS OnBackPressedListener
+    //
+
+    @Override
+    public boolean onBackPressed() {
+        onFragmentInteractionListener.onLeaveLogin();
+
+        return true;
+    }
+
+    //
     // INNER TYPES
     //
 
     public interface OnFragmentInteractionListener {
         void onLoginClicked();
+        void onLeaveLogin();
     }
 }
