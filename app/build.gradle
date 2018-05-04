@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     lintOptions {
@@ -50,11 +51,13 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:support-compat:27.1.1"
+
+    implementation "com.android.support:appcompat-v7:27.1.1"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation "com.android.support:preference-v7:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:preference-v7:27.1.1"
     // Dependencies for local unit tests
-    implementation 'com.android.support:support-v4:27.1.0'
+    implementation 'com.android.support:support-v4:27.1.1'
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     testImplementation "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
     testImplementation "org.powermock:powermock:$rootProject.ext.powermockVersion"
@@ -69,4 +72,8 @@ dependencies {
     implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     implementation 'com.android.volley:volley:1.1.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }

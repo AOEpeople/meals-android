@@ -28,5 +28,9 @@ public class App extends Application {
 
             defaultSharedPreferences.edit().putBoolean("first_app_start", false).apply();
         }
+
+        /* */
+
+        Notifications.INSTANCE.createNotificationChannel(this);
     }
 }

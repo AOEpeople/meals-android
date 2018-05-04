@@ -1,14 +1,10 @@
 package com.aoe.mealsapp;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -41,9 +37,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private static final String OAUTH_CLIENT_ID = BuildConfig.OAUTH_CLIENT_ID;
     private static final String OAUTH_CLIENT_SECRET = BuildConfig.OAUTH_CLIENT_SECRET;
-
-    private static final String NOTIFICATION_CHANNEL_MEALS = "notification_channel_meals";
-    private static final int NOTIFICATION_ID = 1;
 
     //
     // EXTENDS BroadcastReceiver
@@ -115,7 +108,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                     }
 
                     if (!userParticipatesTomorrow) {
-                        notifyUser(context);
+                        Notifications.INSTANCE.showMealsNotification(context);
                     }
                 }
             });
@@ -364,35 +357,5 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         return false;
-    }
-
-    /**
-     * Show a notification in the notification bar. Upon clicking it the MainActivity is started
-     *
-     * @param context Context necessary to create notification
-     */
-    private void notifyUser(Context context) {
-
-        // TODO add comments
-
-        String notificationTitle = context.getString(R.string.notification_title);
-        String notificationText = context.getString(R.string.notification_text);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_MEALS)
-                .setSmallIcon(android.R.drawable.sym_def_app_icon)
-                .setContentTitle(notificationTitle)
-                .setContentText(notificationText);
-
-        Intent resultIntent = new Intent(context, MainActivity.class);
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addParentStack(MainActivity.class);
-        taskStackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(resultPendingIntent);
-
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }

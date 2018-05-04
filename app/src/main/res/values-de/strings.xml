@@ -15,6 +15,10 @@
     <string name="notification_text">Hast du vergessen dich fürs Essen morgen einzutragen?</string>
     <string name="notification_title">Meals Check</string>
 
+    <string name="notifications_channelName">Mahlzeits-Erinnerung</string>
+    <string name="notifications_notificationText">Trage Dich vor 16:00 ein.</string>
+    <string name="notifications_notificationTitle">Denk ans Mittagessen morgen!</string>
+
     <string name="preferences_dailyReminderEnable_title">Tägliche Erinnerung aktivieren</string>
     <string name="preferences_dailyReminderTime_title">Uhrzeit für Erinnerung</string>
     <string name="preferences_language_entries_english">Englisch</string>

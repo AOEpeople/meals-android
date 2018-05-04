@@ -15,6 +15,10 @@
     <string name="notification_text">Did you forget to register for meal tomorrow?</string>
     <string name="notification_title">Meals Check</string>
 
+    <string name="notifications_channelName">Meal Reminder</string>
+    <string name="notifications_notificationText">Register before 4pm.</string>
+    <string name="notifications_notificationTitle">Remember Tomorrow\'s Lunch!</string>
+
     <string name="preferences_dailyReminderEnable_title">Enable Daily Reminder</string>
     <string name="preferences_dailyReminderTime_title">Reminder Time</string>
     <string name="preferences_language_entries_english">English</string>
