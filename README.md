@@ -47,6 +47,12 @@ The app then extracts the participation value for the next day and notifies the 
 
 If a problem occurs when contacting the server, for example if the server is not available because the device is not connected to the network, the app will try to contact the server again every 5 minutes until it succeeds or the latest reminder time is passed.
 
+## Notification
+
+If the the user wants to be notified for the next day and the server request yields that he hasn't registered yet the user is remembered with a notification. Clicking the notification in the notification tray opens the web view.
+
+Since Android 8.0 each app has one or multiple categories that a notification belongs to. Therefore, the app registers a single category on startup that the notification belongs to.
+
 # Coding Guidelines
 
 ## Logging
