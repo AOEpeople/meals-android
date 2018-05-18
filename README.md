@@ -19,6 +19,35 @@ Because all alarms removed when the device reboots the BootReceiver will set the
 
 Any preference changes are stored in the app's default SharedPreferences. The WebFragment checks these for changes when it resumes and reloads the web page accordingly.
 
+## Settings
+
+The settings screen can be opened via the gear symbol on the web screen's toolbar. It allows the user to change
+* his username
+* his password
+* the website's language (English / German)
+* the app's reminder frequency (On Sundays / Before Every Weekday / Never)
+
+### Implementation
+
+All types related to the app's settings are contained in the `settings` package. Essentially, this includes
+* the activity and the fragment that implement the UI
+* the `Settings` singleton and the enums that provide an abstraction for reading and writing settings
+* the `PreferenceKeys` singleton that contains the preference keys defined in `preferences.xml`
+
+`preferences.xml` lays in the `app/res/xml/' directory.
+
+The app's settings are stored in the app's default `SharedPreferences` object. The `SharedPreferences` object is accessed in two ways:
+* by Android's `Preference`s that make up the settings screen
+* by the `Settings` singleton that provides an abstraction to the `SharedPreferences`
+
+<img src="settings.jpg" width="500">
+
+The settings screen is implemented as described in the official docs: https://developer.android.com/guide/topics/ui/settings. The `SettingsActivity` holds the `SettingsFragment`. When created, the `SettingsFragment` loads its content from `preferences.xml` that declares the UI componentens which are visible on the settings screen and initializes them according to the settings stored in the `SharedPreferences`. Also, the `SettingsFragment` registers itselft with the `Settings` singleton to listen for settings changes and updates the UI.
+
+The `Settings` singleton provides a simple API over the `SharedPreferences`. It hides the access to the underlying `SharedPreference` object as well as the keys and values used for storage. The `Language` and `ReminderFrequency` enums contain the possible values for the respective setting.
+
+`PreferenceKeys` singleton merely contains the preference keys as defined in `preferences.xml`. The keys are used by `Settings` to save settings and `SettingsFragment` to find `Preference`s.
+
 ## Alarm
 
 The app sets an alarm that is triggered daily at a pre-set reminder time which is defined in the config file. It is set to some hours before the registration period ends.
