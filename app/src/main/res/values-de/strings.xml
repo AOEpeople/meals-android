@@ -26,8 +26,8 @@
     <string name="preferences_language_title">Sprache</string>
     <string name="preferences_password_title">Passwort</string>
     <string name="preferences_reminderFrequency_entries_beforeEveryWeekday">Vor jedem Wochentag</string>
-    <string name="preferences_reminderFrequency_entries_beforeMonday">Sonntags</string>
     <string name="preferences_reminderFrequency_entries_never">Nie</string>
+    <string name="preferences_reminderFrequency_entries_onSundays">Sonntags</string>
     <string name="preferences_reminderFrequency_title">Erinnerung</string>
     <string name="preferences_username_hint">max.mustermann</string>
     <string name="preferences_username_title">Benutzername</string>

@@ -3,7 +3,6 @@ package com.aoe.mealsapp
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.preference.PreferenceManager
 import android.util.Log
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
@@ -11,9 +10,10 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.aoe.mealsapp.settings.ReminderFrequency
+import com.aoe.mealsapp.settings.Settings
 import com.aoe.mealsapp.util.Alarm
 import com.aoe.mealsapp.util.Config
-import com.aoe.mealsapp.util.Settings
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -95,12 +95,9 @@ class AlarmReceiver : BroadcastReceiver() {
 
         /* read set reminder frequency from default shared preferences */
 
-        Settings.readReminderFrequency(context)
+        val reminderFrequency = Settings.getInstance(context).reminderFrequency
 
-        val reminderFrequencyKey = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(SharedPreferenceKeys.REMINDER_FREQUENCY, null)
-
-        if (reminderFrequencyKey == null) {
+        if (reminderFrequency == null) {
             // TODO review: should never happen
             Log.e(TAG, Thread.currentThread().name + " ### "
                     + "userWantsToBeNotifiedForTomorrow: Couldn't read reminder frequency from "
@@ -113,16 +110,11 @@ class AlarmReceiver : BroadcastReceiver() {
         val today = Calendar.getInstance()
         val dayOfWeek = today.get(Calendar.DAY_OF_WEEK)
 
-        when (reminderFrequencyKey) {
-            SharedPreferenceKeys.REMINDER_FREQUENCY__BEFORE_MONDAY -> return dayOfWeek == 1
-
-            SharedPreferenceKeys.REMINDER_FREQUENCY__BEFORE_EVERY_WEEKDAY -> return 1 <= dayOfWeek && dayOfWeek <= 5
-
-            SharedPreferenceKeys.REMINDER_FREQUENCY__NEVER -> return false
+        return when (reminderFrequency) {
+            ReminderFrequency.BEFORE_EVERY_WEEKDAY -> dayOfWeek in 1..5
+            ReminderFrequency.ON_SUNDAYS -> dayOfWeek == 1
+            ReminderFrequency.NEVER -> false
         }
-
-        // unreachable
-        return false
     }
 
     /**
@@ -194,10 +186,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
                 /* read credentials from shared preferences */
 
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-                val username = sharedPreferences.getString(SharedPreferenceKeys.USERNAME, null)
-                val password = sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null)
+                val username = Settings.getInstance(context).username
+                val password = Settings.getInstance(context).password
 
                 // TODO handle null
 
@@ -208,8 +198,8 @@ class AlarmReceiver : BroadcastReceiver() {
                 params["grant_type"] = "password"
                 params["client_id"] = OAUTH_CLIENT_ID
                 params["client_secret"] = OAUTH_CLIENT_SECRET
-                params["username"] = username
-                params["password"] = password
+                params["username"] = username!!
+                params["password"] = password!!
 
                 return params
             }

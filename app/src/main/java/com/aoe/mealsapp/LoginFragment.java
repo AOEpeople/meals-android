@@ -1,9 +1,7 @@
 package com.aoe.mealsapp;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,6 +13,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.aoe.mealsapp.settings.Settings;
 
 /**
  * Activity that is shown on first startup for the user to enter his credentials. Will be started
@@ -74,18 +74,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener, OnB
 
         final View rootView = inflater.inflate(R.layout.fragment_login, container, false);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
         /* set up UI widgets */
 
         final Button button_login = rootView.findViewById(R.id.loginFragment_button_login);
         button_login.setOnClickListener(this);
 
         editText_username = rootView.findViewById(R.id.loginFragment_editText_username);
-        editText_username.setText(sharedPreferences.getString(SharedPreferenceKeys.USERNAME, ""));
+        editText_username.setText(Settings.Companion.getInstance(getContext()).getUsername());
 
         editText_password = rootView.findViewById(R.id.loginFragment_editText_password);
-        editText_password.setText(sharedPreferences.getString(SharedPreferenceKeys.PASSWORD, ""));
+        editText_password.setText(Settings.Companion.getInstance(getContext()).getPassword());
 
         /* set up last EditText to login on clicking the Done key */
 
@@ -142,15 +140,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener, OnB
 
     private void storeCredentialsAndNotifiyActivity() {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
         String username = editText_username.getText().toString();
         String password = editText_password.getText().toString();
 
-        sharedPreferences.edit()
-                .putString(SharedPreferenceKeys.USERNAME, username)
-                .putString(SharedPreferenceKeys.PASSWORD, password)
-                .apply();
+        Settings.Companion.getInstance(getContext()).setUsername(username);
+        Settings.Companion.getInstance(getContext()).setPassword(password);
 
         onFragmentInteractionListener.onLoginClicked();
     }

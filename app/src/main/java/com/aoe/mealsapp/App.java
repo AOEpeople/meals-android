@@ -17,6 +17,8 @@ public class App extends Application {
         Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onCreate() called");
 
+        PreferenceManager.setDefaultValues(this, R.xml.preferences,false);
+
         /* run on first app start */
 
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

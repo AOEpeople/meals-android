@@ -25,9 +25,9 @@
     <string name="preferences_language_entries_german">German</string>
     <string name="preferences_language_title">Language</string>
     <string name="preferences_password_title">Password</string>
-    <string name="preferences_reminderFrequency_entries_beforeEveryWeekday">Before every weekday</string>
-    <string name="preferences_reminderFrequency_entries_beforeMonday">On Sundays</string>
+    <string name="preferences_reminderFrequency_entries_beforeEveryWeekday">Before Every Weekday</string>
     <string name="preferences_reminderFrequency_entries_never">Never</string>
+    <string name="preferences_reminderFrequency_entries_onSundays">On Sundays</string>
     <string name="preferences_reminderFrequency_title">Reminder</string>
     <string name="preferences_username_hint">john.doe</string>
     <string name="preferences_username_title">Username</string>

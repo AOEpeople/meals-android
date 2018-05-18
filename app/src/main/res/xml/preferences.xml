@@ -20,7 +20,7 @@
         android:title="@string/preferences_language_title" />
 
     <ListPreference
-        android:defaultValue="@string/preferences_reminderFrequency_entryValues_beforeMonday"
+        android:defaultValue="@string/preferences_reminderFrequency_entryValues_onSundays"
         android:entries="@array/preferences_reminderFrequency_entries"
         android:entryValues="@array/preferences_reminderFrequency_entryValues"
         android:key="@string/preferences_reminderFrequency"

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="preferences_language_entryValues_english">ENGLISH</string>
+    <string name="preferences_language_entryValues_german">GERMAN</string>
+    <string name="preferences_reminderFrequency_entryValues_beforeEveryWeekday">BEFORE_EVERY_WEEKDAY</string>
+    <string name="preferences_reminderFrequency_entryValues_never">NEVER</string>
+    <string name="preferences_reminderFrequency_entryValues_onSundays">ON_SUNDAYS</string>
+</resources>

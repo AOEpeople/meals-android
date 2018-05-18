@@ -5,9 +5,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.aoe.mealsapp.settings.Language;
+import com.aoe.mealsapp.settings.Settings;
+import com.aoe.mealsapp.settings.SettingsActivity;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -60,13 +62,11 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
 
     private OnFragmentInteractionListener onFragmentInteractionListener;
 
-    private SharedPreferences defaultSharedPreferences;
-
-    // keep track of the values read from the default SharedPreferences last time
+    // keep track of the values read from the settings last time
     // to be able to recognize changes in onResume()
     private String lastUsernamePreference;
     private String lastPasswordPreference;
-    private String lastLanguagePreference;
+    private Language lastLanguagePreference;
 
     //
     // CONSTRUCTORS
@@ -129,9 +129,11 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
         // as well as the language changed (null -> something) so that the language would
         // be switched unintentionally
 
-        lastUsernamePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
-        lastPasswordPreference = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
-        lastLanguagePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
+        Settings settings = Settings.Companion.getInstance(getActivity());
+
+        lastUsernamePreference = settings.getUsername();
+        lastPasswordPreference = settings.getPassword();
+        lastLanguagePreference = settings.getLanguage();
 
         loadLoginPage(lastUsernamePreference, lastPasswordPreference);
 
@@ -145,8 +147,6 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
                 + "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
 
         setHasOptionsMenu(true);
-
-        defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
     }
 
     @Override
@@ -203,7 +203,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     }
 
     /**
-     * Check for any changes made to the default SharedPreferences while this fragment was paused.
+     * Check for any changes made to the settings while this fragment was paused.
      */
     @Override
     public void onResume() {
@@ -211,7 +211,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
         Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onResume() called");
 
-        /* check for changes in default SharedPreferences & react if necessary */
+        /* check for changes in settings & react if necessary */
 
         boolean usernameChanged = usernamePreferenceChanged();
         boolean passwordChanged = passwordPreferenceChanged();
@@ -233,18 +233,18 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     //
 
     /**
-     * Reads the username from the default SharedPreferences and compares it with the one read
+     * Reads the username from the settings and compares it with the one read
      * last time. If it hasn't been read before it's compared with null. Finally, saves the
      * current value.
      *
-     * @return True if the username read from the default SharedPreferences has
+     * @return True if the username read from the settings has
      * changed since the last time. False otherwise.
      *
      * The current value and the old one are considered to be equal if String.equals() yields true
      * or if both are null.
      */
     private boolean usernamePreferenceChanged() {
-        String currentUsernamePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.USERNAME, null);
+        String currentUsernamePreference = Settings.Companion.getInstance(getActivity()).getUsername();
 
         boolean usernamePreferenceChanged = !TextUtils.equals(currentUsernamePreference, lastUsernamePreference);
 
@@ -254,18 +254,18 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     }
 
     /**
-     * Reads the password from the default SharedPreferences and compares it with the one read
+     * Reads the password from the settings and compares it with the one read
      * last time. If it hasn't been read before it's compared with null. Finally, saves the
      * current value.
      *
-     * @return True if the password read from the default SharedPreferences has
+     * @return True if the password read from the settings has
      * changed since the last time. False otherwise.
      *
      * The current value and the old one are considered to be equal if String.equals() yields true
      * or if both are null.
      */
     private boolean passwordPreferenceChanged() {
-        String currentPasswordPreference = defaultSharedPreferences.getString(SharedPreferenceKeys.PASSWORD, null);
+        String currentPasswordPreference = Settings.Companion.getInstance(getActivity()).getPassword();
 
         boolean passwordPreferenceChanged = !TextUtils.equals(currentPasswordPreference, lastPasswordPreference);
 
@@ -275,20 +275,20 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     }
 
     /**
-     * Reads the language from the default SharedPreferences and compares it with the one read
+     * Reads the language from the settings and compares it with the one read
      * last time. If it hasn't been read before it's compared with null. Finally, saves the
      * current value.
      *
-     * @return True if the language read from the default SharedPreferences has
+     * @return True if the language read from the settings has
      * changed since the last time. False otherwise.
      *
      * The current value and the old one are considered to be equal if String.equals() yields true
      * or if both are null.
      */
     private boolean languagePreferenceChanged() {
-        String currentLanguagePreference = defaultSharedPreferences.getString(SharedPreferenceKeys.LANGUAGE, null);
+        Language currentLanguagePreference = Settings.Companion.getInstance(getActivity()).getLanguage();
 
-        boolean languagePreferenceChanged = !TextUtils.equals(currentLanguagePreference, lastLanguagePreference);
+        boolean languagePreferenceChanged = currentLanguagePreference != lastLanguagePreference;
 
         lastLanguagePreference = currentLanguagePreference;
 
