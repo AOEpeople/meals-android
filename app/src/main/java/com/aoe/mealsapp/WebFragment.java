@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.aoe.mealsapp.settings.Language;
 import com.aoe.mealsapp.settings.Settings;
@@ -58,7 +59,8 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     // FIELDS
     //
 
-    private WebView webView;
+    private WebView webView_webApp;
+    private ProgressBar progressBar_webApp;
 
     private OnFragmentInteractionListener onFragmentInteractionListener;
 
@@ -117,10 +119,12 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
         toolbar.setLogo(R.drawable.logo);
         appCompatActivity.setSupportActionBar(toolbar);
 
-        /* init WebView */
+        /* init widgets */
 
-        webView = rootView.findViewById(R.id.webFragment_webView_webApp);
-        initWebView(webView);
+        webView_webApp = rootView.findViewById(R.id.webFragment_webView_webApp);
+        progressBar_webApp = rootView.findViewById(R.id.webFragment_progressBar_webApp);
+
+        initWebView(webView_webApp);
 
         /* load login page */
 
@@ -191,7 +195,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
                 break;
 
             case R.id.mainMenu_account:
-                webView.loadUrl(PAGE_TRANSACTIONS);
+                webView_webApp.loadUrl(PAGE_TRANSACTIONS);
                 return true;
 
             case R.id.mainMenu_settings:
@@ -224,7 +228,7 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
             loadLoginPage(lastUsernamePreference, lastPasswordPreference);
 
         } else if (languageChanged) {
-            loadLanguageSwitchPage(webView.getUrl());
+            loadLanguageSwitchPage(webView_webApp.getUrl());
         }
     }
 
@@ -298,13 +302,13 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
     private void loadLanguageSwitchPage(String targetUrl) {
         Map<String, String> additionalHttpHeaders = new HashMap<>();
         additionalHttpHeaders.put("Referer", targetUrl);
-        webView.loadUrl(PAGE_LANGUAGE_SWITCH, additionalHttpHeaders);
+        webView_webApp.loadUrl(PAGE_LANGUAGE_SWITCH, additionalHttpHeaders);
     }
 
     private void loadLoginPage(String username, String password) {
         String postData = "_username=" + (username == null ? "" : username)
                 + "&_password=" + (password == null ? "" : password);
-        webView.postUrl(PAGE_LOGIN, postData.getBytes());
+        webView_webApp.postUrl(PAGE_LOGIN, postData.getBytes());
     }
 
     /**
@@ -323,6 +327,8 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
                 super.onPageFinished(view, url);
                 Log.d(TAG, Thread.currentThread().getName() + " ### "
                         + "onPageFinished() called with: view = [" + view + "], url = [" + url + "]");
+
+                progressBar_webApp.setVisibility(View.GONE);
 
                 // ignore if activity has been destroyed
                 if (onFragmentInteractionListener != null) {
@@ -350,8 +356,8 @@ public class WebFragment extends Fragment implements OnBackPressedListener {
         Log.d(TAG, Thread.currentThread().getName() + " ### "
                 + "onBackPressed() called");
 
-        if (webView.canGoBack()) {
-            webView.goBack();
+        if (webView_webApp.canGoBack()) {
+            webView_webApp.goBack();
 
             return true;
         } else {
