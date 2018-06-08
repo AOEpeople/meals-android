@@ -42,7 +42,7 @@ class AlarmReceiver : BroadcastReceiver() {
         /* if user wants to be notified: request server */
 
         if (userWantsToBeNotifiedForTomorrow(context)) {
-        
+
             requestUserParticipatesTomorrow(context) { userParticipatesTomorrow ->
 
                 // no valid response from server

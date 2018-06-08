@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
 
         /* show WebFragment initially */
 
-        WebFragment webFragment = WebFragment.newInstance();
+        WebFragment webFragment = WebFragment.Companion.newInstance();
         String fragmentTag = webFragment.getClass().getCanonicalName();
 
         getSupportFragmentManager()
