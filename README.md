@@ -108,3 +108,31 @@ Also, every exception is logged using 'loget':
                 + "accept: Couldn't read reminder time from config file. No alarm set.", e);
         return;
     }
+
+## Naming Scheme for XML IDs
+
+XML IDs must be unique within their context. In most cases that context corresponds to the containing layout file.
+
+String IDs must be unique within their file. As all strings from all activities are defined in strings.xml all String IDs must be unique globally.
+
+To keep things simple, the following naming scheme ensures that both IDs and String IDs are globally unique.
+
+### IDs
+
+IDs have the form
+
+    <layout>_<widget>_<meaning>
+    
+where each part is written in CamelCase notation. For example:
+
+    android:id="@+id/loginFragment_editText_username"
+    
+### String IDs
+    
+String IDs have the form
+
+    <layout>_<widget>_<meaning>_<attribute>
+    
+For example:
+
+    android:hint="@string/loginFragment_editText_username_hint"
