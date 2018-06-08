@@ -4,17 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import android.widget.Toast
+import com.aoe.mealsapp.rest.CurrentWeekResponse
+import com.aoe.mealsapp.rest.MealsApiImpl
 import com.aoe.mealsapp.settings.ReminderFrequency
 import com.aoe.mealsapp.settings.Settings
 import com.aoe.mealsapp.util.Alarm
 import com.aoe.mealsapp.util.Config
-import org.json.JSONObject
 import java.util.*
 
 /**
@@ -46,17 +42,25 @@ class AlarmReceiver : BroadcastReceiver() {
         /* if user wants to be notified: request server */
 
         if (userWantsToBeNotifiedForTomorrow(context)) {
-
+        
             requestUserParticipatesTomorrow(context) { userParticipatesTomorrow ->
+
+                // no valid response from server
                 if (userParticipatesTomorrow == null) {
                     Log.w(TAG, Thread.currentThread().name + " ### "
-                            + "onReceive: Couldn't request server. Retry if latest reminder time hasn't passed, yet.")
+                            + "onReceive: Couldn't request server.")
+
+                    Toast.makeText(context, "Couldn't request server", Toast.LENGTH_LONG).show()
 
                     if (!latestReminderTimePassed(context)) {
+                        Toast.makeText(context, "Retry in 5min.", Toast.LENGTH_LONG).show()
                         Alarm.setRetryAlarm(context)
+                    } else {
+                        Toast.makeText(context, "Aborting today's notification.", Toast.LENGTH_LONG).show()
                     }
-
-                } else if (!userParticipatesTomorrow) {
+                }
+                // valid response && user does not participate yet
+                else if (!userParticipatesTomorrow) {
                     Notifications.showMealsNotification(context)
                 }
             }
@@ -107,88 +111,26 @@ class AlarmReceiver : BroadcastReceiver() {
             context: Context,
             callback: (userParticipatesTomorrow: Boolean?) -> Unit) {
 
-        val volleyRequestQueue = Volley.newRequestQueue(context)
+        val settings = Settings.getInstance(context)
+        val api = MealsApiImpl.getInstance(context)
 
-        requestLogin(volleyRequestQueue, context) { loginResponse ->
+        api.requestLogin(settings.username, settings.password) { loginResponse ->
 
-            val token = JSONObject(loginResponse).getString("access_token")
+            val token = loginResponse?.accessToken
+            if (token == null) {
+                callback(null)
+            } else {
 
-            requestCurrentWeek(volleyRequestQueue, token) { currentWeekResponse ->
+                api.requestCurrentWeek(token) { currentWeekResponse ->
+                    if (currentWeekResponse == null) {
+                        callback(null)
+                    } else {
 
-                if (currentWeekResponse == null) {
-                    callback(null)
-                } else {
-                    callback(userParticipatesTomorrow(currentWeekResponse))
+                        callback(userParticipatesTomorrow(currentWeekResponse))
+                    }
                 }
             }
         }
-    }
-
-    /**
-     * Sends a POST request to the login endpoint and returns the response asynchronously.
-     */
-    @Throws(VolleyError::class)
-    private fun requestLogin(
-            volleyRequestQueue: RequestQueue,
-            context: Context,
-            callback: (loginResponse: String?) -> Unit) {
-
-        volleyRequestQueue.add(object : StringRequest(
-                Request.Method.POST,
-                BuildConfig.SERVER_URL + "/oauth/v2/token",
-
-                Response.Listener { response ->
-                    Log.d(TAG, Thread.currentThread().name + " ### "
-                            + "requestLogin() called with: response = [$response]")
-
-                    callback.invoke(response)
-                },
-
-                Response.ErrorListener { error ->
-                    Log.d(TAG, Thread.currentThread().name + " ### "
-                            + "requestLogin() called with: error = [$error]")
-
-                    callback.invoke(null)
-                }
-        ) {
-            override fun getParams() = mapOf(
-                    "grant_type" to "password",
-                    "client_id" to OAUTH_CLIENT_ID,
-                    "client_secret" to OAUTH_CLIENT_SECRET,
-                    "username" to Settings.getInstance(context).username,
-                    "password" to Settings.getInstance(context).password)
-        })
-    }
-
-    /**
-     * Sends a GET request to the currentWeek endpoint and returns the response asynchronously.
-     */
-    @Throws(VolleyError::class)
-    private fun requestCurrentWeek(
-            volleyRequestQueue: RequestQueue,
-            token: String,
-            callback: (currentWeekResponse: String?) -> Unit) {
-
-        volleyRequestQueue.add(object : StringRequest(
-                Request.Method.GET,
-                BuildConfig.SERVER_URL + "/rest/v1/week/active",
-
-                Response.Listener { response ->
-                    Log.d(TAG, Thread.currentThread().name + " ### "
-                            + "requestCurrentWeek() called with: response = [$response]")
-
-                    callback.invoke(response)
-                },
-
-                Response.ErrorListener { error ->
-                    Log.d(TAG, Thread.currentThread().name + " ### "
-                            + "requestCurrentWeek() called with: error = [$error]")
-
-                    callback(null)
-                }
-        ) {
-            override fun getHeaders() = mapOf("Authorization" to "Bearer $token")
-        })
     }
 
     /**
@@ -196,7 +138,7 @@ class AlarmReceiver : BroadcastReceiver() {
      *
      * @return true if user participates in at least one meal, false otherwise
      */
-    private fun userParticipatesTomorrow(currentWeekResponse: String): Boolean {
+    private fun userParticipatesTomorrow(currentWeekResponse: CurrentWeekResponse): Boolean? {
 
         /* get tomorrow's dayOfWeek in Monday = 0, Tuesday = 1, ... format */
 
@@ -207,20 +149,16 @@ class AlarmReceiver : BroadcastReceiver() {
 
         /* search JSON object for any meal participation tomorrow */
 
-        val days = JSONObject(currentWeekResponse)
-                .getJSONObject("currentWeek")
-                .getJSONArray("days")
+        val days = currentWeekResponse.currentWeek?.days ?: return null
 
-        if (dayOfWeek > days.length()) {
+        if (dayOfWeek > days.size) {
             return false
         }
 
-        val meals = days
-                .getJSONObject(dayOfWeek)
-                .getJSONArray("meals")
+        val meals = days[dayOfWeek].meals ?: return null
 
-        for (i in 0 until meals.length()) {
-            if (meals.getJSONObject(i).getBoolean("isParticipate")) {
+        for (meal in meals) {
+            if (meal.isParticipate ?: return null) {
                 return true
             }
         }
@@ -235,9 +173,6 @@ class AlarmReceiver : BroadcastReceiver() {
     private companion object {
 
         private const val TAG = "AlarmReceiver"
-
-        private const val OAUTH_CLIENT_ID = BuildConfig.OAUTH_CLIENT_ID
-        private const val OAUTH_CLIENT_SECRET = BuildConfig.OAUTH_CLIENT_SECRET
     }
 
     // endregion
