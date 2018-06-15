@@ -5,15 +5,19 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.*
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.aoe.mealsapp.settings.Language
 import com.aoe.mealsapp.settings.Settings
 import com.aoe.mealsapp.settings.SettingsActivity
@@ -35,7 +39,7 @@ class WebFragment : Fragment(), OnBackPressedListener {
     private lateinit var password: String
     private lateinit var language: Language
 
-    // region ### onCreate()
+    // region ### init UI widgets
     //
 
     override fun onCreateView(
@@ -93,6 +97,15 @@ class WebFragment : Fragment(), OnBackPressedListener {
         webView.settings.userAgentString = HTTP_USER_AGENT
 
         webView.webViewClient = object : WebViewClient() {
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                Log.d(TAG, Thread.currentThread().name + " ### " +
+                        "onPageStarted() called with: view = [$view], url = [$url], favicon = [$favicon]")
+
+                progressBar.visibility = View.VISIBLE
+            }
+
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 Log.d(TAG, Thread.currentThread().name + " ### "
@@ -112,6 +125,16 @@ class WebFragment : Fragment(), OnBackPressedListener {
                         onFragmentInteractionListener!!.onLoginFailed()
                     }
                 }
+            }
+
+            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                super.onReceivedError(view, request, error)
+                Log.d(TAG, Thread.currentThread().name + " ### " +
+                        "onReceivedError() called with: view = [$view], request = [$request], error = [$error]")
+
+                progressBar.visibility = View.GONE
+
+                Toast.makeText(context, "ERROR", Toast.LENGTH_LONG).show()
             }
         }
     }
