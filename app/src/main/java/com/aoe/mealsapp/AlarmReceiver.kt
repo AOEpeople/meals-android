@@ -19,7 +19,8 @@ import java.util.*
  */
 class AlarmReceiver : BroadcastReceiver() {
 
-    // region ### onReceive
+    // region ### onReceive()
+    //
 
     /**
      * On daily alarm that triggers participation check:
@@ -30,8 +31,8 @@ class AlarmReceiver : BroadcastReceiver() {
      * If the server is not available: retry every 5min within one hour after the planned request.
      */
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d(TAG, Thread.currentThread().name + " ### "
-                + "onReceive() called with: context = [$context], intent = [$intent]")
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "onReceive() called with: context = [$context], intent = [$intent]")
 
         /* if it's too late today: do nothing */
 
@@ -47,8 +48,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
                 // no valid response from server
                 if (userParticipatesTomorrow == null) {
-                    Log.w(TAG, Thread.currentThread().name + " ### "
-                            + "onReceive: Couldn't request server.")
+                    Log.d(TAG, Thread.currentThread().name + " ### " +
+                            "onReceive() called with: userParticipatesTomorrow = [$userParticipatesTomorrow]")
 
                     Toast.makeText(context, "Couldn't request server", Toast.LENGTH_LONG).show()
 
@@ -97,9 +98,11 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
+    //
     // endregion
 
     // region ### server communication
+    //
 
     /**
      * Determine whether the user participates in any meal tomorrow.
@@ -166,14 +169,10 @@ class AlarmReceiver : BroadcastReceiver() {
         return false
     }
 
+    //
     // endregion
-
-    // region ### companion
 
     private companion object {
-
         private const val TAG = "AlarmReceiver"
     }
-
-    // endregion
 }

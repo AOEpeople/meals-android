@@ -6,7 +6,7 @@ import android.preference.PreferenceManager
 import com.aoe.mealsapp.util.SingletonHolder
 
 class Settings private constructor(context: Context)
-    : SharedPreferences.OnSharedPreferenceChangeListener{
+    : SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val defaultSharedPreferences: SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(context)
@@ -45,6 +45,12 @@ class Settings private constructor(context: Context)
             defaultSharedPreferences.edit().putString(Setting.REMINDER_FREQUENCY.toString(), value.toString()).apply()
         }
 
+    var firstAppStart: Boolean
+        get() = defaultSharedPreferences.getBoolean(Setting.FIRST_APP_START.toString(), true)
+        set(value) {
+            defaultSharedPreferences.edit().putBoolean(Setting.FIRST_APP_START.toString(), value).apply()
+        }
+
     //
     // notify about settings changes
     //
@@ -59,7 +65,7 @@ class Settings private constructor(context: Context)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val setting = Setting.valueOf(key)
-        when(setting) {
+        when (setting) {
             Setting.USERNAME -> listeners.forEach { it.onUsernameChanged(username) }
             Setting.PASSWORD -> listeners.forEach { it.onPasswordChanged(password) }
             Setting.LANGUAGE -> listeners.forEach { it.onLanguageChanged(language) }

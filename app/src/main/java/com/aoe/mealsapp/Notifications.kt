@@ -13,7 +13,7 @@ import android.support.v4.app.TaskStackBuilder
 
 object Notifications {
 
-    const val REQUEST_CODE = 1
+    private const val REQUEST_CODE = 1
 
     /* notification channel */
 
@@ -32,9 +32,7 @@ object Notifications {
     @StringRes
     private const val NOTIFICATION_TEXT = R.string.notifications_notificationText
 
-    //
-    // PUBLIC METHODS
-    //
+    /* */
 
     fun createNotificationChannel(context: Context) {
 

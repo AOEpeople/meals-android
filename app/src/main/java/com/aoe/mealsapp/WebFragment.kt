@@ -26,8 +26,6 @@ import java.util.*
  */
 class WebFragment : Fragment(), OnBackPressedListener {
 
-    // region ### common properties
-
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
 
@@ -37,9 +35,8 @@ class WebFragment : Fragment(), OnBackPressedListener {
     private lateinit var password: String
     private lateinit var language: Language
 
-    // endregion
-
     // region ### onCreate()
+    //
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -134,9 +131,11 @@ class WebFragment : Fragment(), OnBackPressedListener {
         inflater!!.inflate(R.menu.menu_main, menu)
     }
 
+    //
     // endregion
 
     // region ### fragment -> activity communication
+    //
 
     private var onFragmentInteractionListener: OnFragmentInteractionListener? = null
 
@@ -167,9 +166,11 @@ class WebFragment : Fragment(), OnBackPressedListener {
         fun onLoginFailed()
     }
 
+    //
     // endregion
 
     // region ### app bar menu
+    //
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         Log.d(TAG, Thread.currentThread().name + " ### "
@@ -206,9 +207,11 @@ class WebFragment : Fragment(), OnBackPressedListener {
         return super.onOptionsItemSelected(item)
     }
 
+    //
     // endregion
 
     // region ### onResume(): check settings
+    //
 
     /**
      * Check for any changes made to the settings while this fragment was paused.
@@ -240,9 +243,11 @@ class WebFragment : Fragment(), OnBackPressedListener {
         webView.loadUrl(PAGE_LANGUAGE_SWITCH, mapOf("Referer" to targetUrl))
     }
 
+    //
     // endregion
 
     // region ### onBackPressed(): back in browser history / close Fragment
+    //
 
     override fun onBackPressed(): Boolean {
         Log.d(TAG, Thread.currentThread().name + " ### "
@@ -257,9 +262,8 @@ class WebFragment : Fragment(), OnBackPressedListener {
         }
     }
 
+    //
     // endregion
-
-    // region ### companion
 
     companion object {
 
@@ -274,6 +278,4 @@ class WebFragment : Fragment(), OnBackPressedListener {
 
         fun newInstance() = WebFragment()
     }
-
-    // endregion
 }
