@@ -221,9 +221,9 @@ class WebFragment : Fragment(), OnBackPressedListener {
         // Fragment has been attached to Activity when onResume() is called
         val settings = Settings.getInstance(context!!)
 
-        val usernameChanged = username == settings.username
-        val passwordChanged = password == settings.password
-        val languageChanged = language == settings.language
+        val usernameChanged = username != settings.username
+        val passwordChanged = password != settings.password
+        val languageChanged = language != settings.language
 
         if ((usernameChanged || passwordChanged) && languageChanged) {
             switchLanguage(targetUrl = PAGE_LOGIN)
