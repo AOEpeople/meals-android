@@ -20,10 +20,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <WebView
-            android:id="@+id/webFragment_webView_webApp"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/webFragment_swipeRefreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <WebView
+                android:id="@+id/webFragment_webView_webApp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <ProgressBar
             android:id="@+id/webFragment_progressBar_webApp"

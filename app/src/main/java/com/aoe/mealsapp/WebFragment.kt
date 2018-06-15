@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -32,6 +33,7 @@ class WebFragment : Fragment(), OnBackPressedListener {
 
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     // copy of relevant settings
     // necessary to recognize updates happening to settings between onPause() and onResume()
@@ -66,6 +68,14 @@ class WebFragment : Fragment(), OnBackPressedListener {
 
         webView = rootView.findViewById(R.id.webFragment_webView_webApp)
         progressBar = rootView.findViewById(R.id.webFragment_progressBar_webApp)
+
+        swipeRefreshLayout = rootView.findViewById(R.id.webFragment_swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            Log.d(TAG, Thread.currentThread().name + " ### " +
+                    "onCreateView() called")
+
+            webView.reload()
+        }
 
         initWebView()
 
@@ -112,6 +122,7 @@ class WebFragment : Fragment(), OnBackPressedListener {
                         + "onPageFinished() called with: view = [$view], url = [$url]")
 
                 progressBar.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
 
                 /* unexpected page (e.g. bad credentials) ? notify Activity */
 

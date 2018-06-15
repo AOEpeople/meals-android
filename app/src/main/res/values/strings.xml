@@ -35,4 +35,5 @@
     <string name="webActivity_toolbar_appBar_title">AOEMEALS</string>
 
     <string name="webFragment_toolbar_appBar_title">AOEMEALS</string>
+    <string name="mainMenu_refresh_title">Refresh</string>
 </resources>
