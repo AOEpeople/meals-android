@@ -4,10 +4,10 @@
 
     <string name="loginActivity_toolbar_appBar_title">AOEMEALS</string>
 
-    <string name="loginFragment_button_login_text">Login</string>
-    <string name="loginFragment_editText_username_hint">max.mustermann</string>
-    <string name="loginFragment_textView_password_text">Passwort</string>
-    <string name="loginFragment_textView_username_text">Benutzername</string>
+    <string name="loginActivity_button_login_text">Login</string>
+    <string name="loginActivity_editText_username_hint">max.mustermann</string>
+    <string name="loginActivity_textView_password_text">Passwort</string>
+    <string name="loginActivity_textView_username_text">Benutzername</string>
 
     <string name="mainMenu_account_title">Konto</string>
     <string name="mainMenu_settings_title">Einstellungen</string>
@@ -32,7 +32,7 @@
     <string name="preferences_username_hint">max.mustermann</string>
     <string name="preferences_username_title">Benutzername</string>
 
-    <string name="webActivity_toolbar_appBar_title">AOEMEALS</string>
+    <string name="webActivity_toolbar_title">AOEMEALS</string>
 
     <string name="webFragment_toolbar_appBar_title">AOEMEALS</string>
 </resources>

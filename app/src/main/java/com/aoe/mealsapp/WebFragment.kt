@@ -33,8 +33,8 @@ class WebFragment : Fragment(), OnBackPressedListener {
     private lateinit var webView: WebView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    // copy of relevant settings
-    // necessary to recognize updates happening to settings between onPause() and onResume()
+    // copy of relevant settings necessary to recognize updates happening to settings between
+    // onPause() and onResume()
     private lateinit var username: String
     private lateinit var password: String
     private lateinit var language: Language
@@ -213,94 +213,9 @@ class WebFragment : Fragment(), OnBackPressedListener {
         // should not be null (?)
         val optionsItemId = item!!.itemId
 
-        when (optionsItemId) {
-            R.id.mainMenu_alarm -> {
 
-                /* for debugging: trigger immediate alarm */
-
-                // Fragment has been attached when onOptionsItemSelected() is called
-                val alarmManager = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-                val alarmIntent = PendingIntent.getBroadcast(context, 0,
-                        Intent(context, AlarmReceiver::class.java), 0)
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        Calendar.getInstance().timeInMillis, alarmIntent)
-            }
-
-            R.id.mainMenu_account -> {
-                webView.loadUrl(PAGE_TRANSACTIONS)
-                return true
-            }
-
-            R.id.mainMenu_settings -> {
-                startActivity(Intent(context, SettingsActivity::class.java))
-                return true
-            }
-
-            R.id.mainMenu_refresh -> {
-                swipeRefreshLayout.isRefreshing = true
-                refreshWebView()
-
-                return true
-            }
-        }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    //
-    // endregion
-
-    // region ### onResume(): check settings
-    //
-
-    /**
-     * Check for any changes made to the settings while this fragment was paused.
-     */
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, Thread.currentThread().name + " ### "
-                + "onResume() called")
-
-        // Fragment has been attached to Activity when onResume() is called
-        val settings = Settings.getInstance(context!!)
-
-        val usernameChanged = username != settings.username
-        val passwordChanged = password != settings.password
-        val languageChanged = language != settings.language
-
-        if ((usernameChanged || passwordChanged) && languageChanged) {
-            switchLanguage(targetUrl = PAGE_LOGIN)
-
-        } else if (usernameChanged || passwordChanged) {
-            loadLoginPage(username, password)
-
-        } else if (languageChanged) {
-            switchLanguage(webView.url)
-        }
-    }
-
-    private fun switchLanguage(targetUrl: String) {
-        webView.loadUrl(PAGE_LANGUAGE_SWITCH, mapOf("Referer" to targetUrl))
-    }
-
-    //
-    // endregion
-
-    // region ### onBackPressed(): back in browser history / close Fragment
-    //
-
-    override fun onBackPressed(): Boolean {
-        Log.d(TAG, Thread.currentThread().name + " ### "
-                + "onBackPressed() called")
-
-        return if (webView.canGoBack()) {
-            webView.goBack()
-
-            true
-        } else {
-            false
-        }
     }
 
     //

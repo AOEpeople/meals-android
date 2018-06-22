@@ -13,6 +13,8 @@ class App : Application() {
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "onCreate() called")
 
+        /* set default preference values on first app launch */
+
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
 
         /* run on first app start */
