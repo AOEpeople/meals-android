@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(),
             val backPressedHandled = (topFragment as OnBackPressedListener).onBackPressed()
 
             if (!backPressedHandled) {
-                if (fragmentManager.backStackEntryCount == 1) {
+                if (supportFragmentManager.backStackEntryCount == 1) {
                     // close if only one fragment left
                     // prevents the screen from going blank when last fragment would be removed
                     finish()
