@@ -17,7 +17,6 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.aoe.mealsapp.settings.Language
 import com.aoe.mealsapp.settings.Settings
@@ -32,7 +31,6 @@ import java.util.*
 class WebFragment : Fragment(), OnBackPressedListener {
 
     private lateinit var webView: WebView
-    private lateinit var progressBar: ProgressBar
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     // copy of relevant settings
@@ -67,14 +65,13 @@ class WebFragment : Fragment(), OnBackPressedListener {
         /* init widgets */
 
         webView = rootView.findViewById(R.id.webFragment_webView_webApp)
-        progressBar = rootView.findViewById(R.id.webFragment_progressBar_webApp)
 
         swipeRefreshLayout = rootView.findViewById(R.id.webFragment_swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             Log.d(TAG, Thread.currentThread().name + " ### " +
                     "onCreateView() called")
 
-            webView.reload()
+            refreshWebView()
         }
 
         initWebView()
@@ -95,6 +92,10 @@ class WebFragment : Fragment(), OnBackPressedListener {
         return rootView
     }
 
+    private fun refreshWebView() {
+        webView.reload()
+    }
+
     /**
      * - enable JavaScript
      * - set custom HTTP user agent
@@ -113,7 +114,7 @@ class WebFragment : Fragment(), OnBackPressedListener {
                 Log.d(TAG, Thread.currentThread().name + " ### " +
                         "onPageStarted() called with: view = [$view], url = [$url], favicon = [$favicon]")
 
-                progressBar.visibility = View.VISIBLE
+                swipeRefreshLayout.isRefreshing = true
             }
 
             override fun onPageFinished(view: WebView, url: String) {
@@ -121,7 +122,6 @@ class WebFragment : Fragment(), OnBackPressedListener {
                 Log.d(TAG, Thread.currentThread().name + " ### "
                         + "onPageFinished() called with: view = [$view], url = [$url]")
 
-                progressBar.visibility = View.GONE
                 swipeRefreshLayout.isRefreshing = false
 
                 /* unexpected page (e.g. bad credentials) ? notify Activity */
@@ -143,7 +143,7 @@ class WebFragment : Fragment(), OnBackPressedListener {
                 Log.d(TAG, Thread.currentThread().name + " ### " +
                         "onReceivedError() called with: view = [$view], request = [$request], error = [$error]")
 
-                progressBar.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
 
                 Toast.makeText(context, "ERROR", Toast.LENGTH_LONG).show()
             }
@@ -234,6 +234,13 @@ class WebFragment : Fragment(), OnBackPressedListener {
 
             R.id.mainMenu_settings -> {
                 startActivity(Intent(context, SettingsActivity::class.java))
+                return true
+            }
+
+            R.id.mainMenu_refresh -> {
+                swipeRefreshLayout.isRefreshing = true
+                refreshWebView()
+
                 return true
             }
         }

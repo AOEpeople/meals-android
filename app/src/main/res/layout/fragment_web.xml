@@ -16,26 +16,14 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
         app:title="@string/webFragment_toolbar_appBar_title" />
 
-    <FrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/webFragment_swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/webFragment_swipeRefreshLayout"
+        <WebView
+            android:id="@+id/webFragment_webView_webApp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <WebView
-                android:id="@+id/webFragment_webView_webApp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </android.support.v4.widget.SwipeRefreshLayout>
-
-        <ProgressBar
-            android:id="@+id/webFragment_progressBar_webApp"
-            style="@android:style/Widget.DeviceDefault.ProgressBar.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
