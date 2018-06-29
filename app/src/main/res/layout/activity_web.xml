@@ -8,22 +8,23 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/webFragment_toolbar_appBar"
+        android:id="@+id/webActivity_toolbar_appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-        app:title="@string/webFragment_toolbar_appBar_title" />
+        app:title="@string/webActivity_toolbar_title" />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/webFragment_swipeRefreshLayout"
+        android:id="@+id/webActivity_swipeRefreshLayout_webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <WebView
-            android:id="@+id/webFragment_webView_webApp"
+            android:id="@+id/webActivity_webView_webApp"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
+
 </LinearLayout>

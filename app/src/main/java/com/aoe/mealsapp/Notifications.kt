@@ -60,7 +60,7 @@ object Notifications {
         val notificationTitle = context.getString(NOTIFICATION_TITLE)
         val notificationText = context.getString(NOTIFICATION_TEXT)
 
-        val intent = Intent(context, MainActivity::class.java)
+        val intent = Intent(context, WebActivity::class.java)
         val taskStackBuilder = TaskStackBuilder.create(context)
         taskStackBuilder.addNextIntentWithParentStack(intent)
         val pendingIntent = taskStackBuilder.getPendingIntent(
