@@ -74,7 +74,7 @@ class MealsApiImpl private constructor(context: Context)
         })
     }
 
-    private companion object : SingletonHolder<MealsApiImpl, Context>(::MealsApiImpl) {
+    companion object : SingletonHolder<MealsApiImpl, Context>(::MealsApiImpl) {
 
         private const val TAG = "MealsApiImpl"
 
