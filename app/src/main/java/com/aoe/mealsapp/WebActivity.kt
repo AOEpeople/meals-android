@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -36,33 +35,93 @@ class WebActivity : AppCompatActivity() {
     private lateinit var password: String
     private lateinit var language: Language
 
-    //
-    // onCreate(), onCreateOptionsMenu()
-    //
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "onCreate() called with: savedInstanceState = [$savedInstanceState]")
 
-        initUi()
+        setContentView(R.layout.activity_web)
+
+        initUiWidgets()
         readSettings()
 
         if (savedInstanceState == null) {
             loadLoginPage(username, password)
+        } else {
+            webView.restoreState(savedInstanceState)
         }
     }
 
-    private fun initUi() {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "onCreateOptionsMenu() called with: menu = [$menu]")
 
-        setContentView(R.layout.activity_web)
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "onSaveInstanceState() called with: outState = [$outState]")
+
+        webView.saveState(outState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "onResume() called")
+
+        checkForSettingsChange()
+    }
+
+    override fun onBackPressed() {
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "onBackPressed() called")
+
+        if (webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "onOptionsItemSelected() called with: item = [$item]")
+
+        when (item!!.itemId) {
+            R.id.mainMenu_alarm ->
+                triggerAlarm()
+
+            R.id.mainMenu_account ->
+                webView.loadUrl(PAGE_TRANSACTIONS)
+
+            R.id.mainMenu_settings ->
+                startActivity(Intent(this, SettingsActivity::class.java))
+
+            R.id.mainMenu_refresh -> {
+                swipeRefreshLayout.isRefreshing = true
+                refreshWebView()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    // region ### init UI
+    //
+
+    private fun initUiWidgets() {
 
         /* app bar */
 
         webActivity_toolbar_appBar.setLogo(R.drawable.logo)
         setSupportActionBar(webActivity_toolbar_appBar)
 
-        /* widgets */
+        /* WebView */
 
         webView = webActivity_webView_webApp
 
@@ -71,16 +130,9 @@ class WebActivity : AppCompatActivity() {
             refreshWebView()
         }
 
-        /* */
-
         initWebView()
     }
 
-    /**
-     * - enable JavaScript
-     * - set custom HTTP user agent
-     * - set onPageFinished handler that notifies the parent activity if the credentials are wrong
-     */
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
 
@@ -104,7 +156,7 @@ class WebActivity : AppCompatActivity() {
 
                 swipeRefreshLayout.isRefreshing = false
 
-                /* unexpected page (e.g. bad credentials) ? notify Activity */
+                /* wrong page (invalid credentials) ? show LoginActivity */
 
                 // remove trailing slash from URL
                 val normalizedUrl = url.replace("/$".toRegex(), "")
@@ -126,6 +178,12 @@ class WebActivity : AppCompatActivity() {
         }
     }
 
+    //
+    // endregion
+
+    // region ### settings
+    //
+
     private fun readSettings() {
         val settings = Settings.getInstance(this)
 
@@ -134,52 +192,7 @@ class WebActivity : AppCompatActivity() {
         language = settings.language
     }
 
-    private fun loadLoginPage(username: String, password: String) {
-
-        val postData = ("_username=$username&_password=$password")
-        webView.postUrl(PAGE_LOGIN, postData.toByteArray())
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "onCreateOptionsMenu() called with: menu = [$menu]")
-
-        menuInflater.inflate(R.menu.menu_main, menu)
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    //
-    // onSaveInstanceState(), onRestoreInstanceState()
-    //
-
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "onSaveInstanceState() called with: outState = [$outState], outPersistentState = [$outPersistentState]")
-
-        webView.saveState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "onRestoreInstanceState() called with: savedInstanceState = [$savedInstanceState]")
-
-        webView.restoreState(savedInstanceState)
-    }
-
-    //
-    // onResume(): check for settings change
-    //
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "onResume() called")
-
-        /* check and handle settings change */
-
+    private fun checkForSettingsChange() {
         val settings = Settings.getInstance(this)
 
         val usernameChanged = username != settings.username
@@ -201,72 +214,42 @@ class WebActivity : AppCompatActivity() {
         }
     }
 
+    //
+    // endregion
+
+    // region ### load pages
+    //
+
+    private fun loadLoginPage(username: String, password: String) {
+        val postData = ("_username=$username&_password=$password")
+        webView.postUrl(PAGE_LOGIN, postData.toByteArray())
+    }
+
     private fun switchLanguage(targetUrl: String) {
         webView.loadUrl(PAGE_LANGUAGE_SWITCH, mapOf("Referer" to targetUrl))
     }
-
-    //
-    // onBackPressed()
-    //
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "onBackPressed() called")
-
-        if (webView.canGoBack()) {
-            webView.goBack()
-        }
-    }
-
-    //
-    // onOptionsItemSelected()
-    //
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "onOptionsItemSelected() called with: item = [$item]")
-
-        when (item!!.itemId) {
-            R.id.mainMenu_alarm -> {
-                /* for debugging: trigger immediate alarm */
-
-                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-                val alarmIntent = PendingIntent.getBroadcast(this, 0,
-                        Intent(this, AlarmReceiver::class.java), 0)
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        Calendar.getInstance().timeInMillis, alarmIntent)
-            }
-
-            R.id.mainMenu_account -> {
-                webView.loadUrl(PAGE_TRANSACTIONS)
-            }
-
-            R.id.mainMenu_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
-            }
-
-            R.id.mainMenu_refresh -> {
-                swipeRefreshLayout.isRefreshing = true
-                refreshWebView()
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    //
-    // common
-    //
 
     private fun refreshWebView() {
         webView.reload()
     }
 
     //
+    // endregion
+
+    // region ### debug
     //
+
+    private fun triggerAlarm() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val alarmIntent = PendingIntent.getBroadcast(this, 0,
+                Intent(this, AlarmReceiver::class.java), 0)
+        alarmManager.set(AlarmManager.RTC_WAKEUP,
+                Calendar.getInstance().timeInMillis, alarmIntent)
+    }
+
     //
+    // endregion
 
     private companion object {
 
