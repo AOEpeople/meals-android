@@ -1,6 +1,7 @@
 package com.aoe.mealsapp
 
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -70,6 +71,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 finish()
             }
         }
+    }
+
+    override fun onBackPressed() {
+        ActivityCompat.finishAffinity(this)
     }
 
     private companion object {
