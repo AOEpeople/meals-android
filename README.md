@@ -1,6 +1,9 @@
 # meals-android
 Android wrapper for the web app
 
+# Installation
+Download and install the following binary on your Android device: [app-release.apk](app-release.apk)
+
 # Architecture
 
 ## Overview
