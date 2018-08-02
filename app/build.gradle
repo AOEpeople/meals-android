@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'jge9LHM4nl_'
+            storeFile file('C:/Users/tobias.uhmann/aoe_keystore.jks')
+            storePassword 'a9gj4exJM_'
+        }
+    }
     lintOptions {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
@@ -17,9 +25,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-
         buildConfigField "String", "OAUTH_CLIENT_ID", '\"' + findProperty('oauth_client_id') + '\"'
         buildConfigField "String", "OAUTH_CLIENT_SECRET", '\"' + findProperty('oauth_client_secret') + '\"'
+        signingConfig signingConfigs.config
     }
     buildTypes {
         debug {

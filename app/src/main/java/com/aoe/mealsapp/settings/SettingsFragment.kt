@@ -39,7 +39,7 @@ class SettingsFragment : PreferenceFragment(), Settings.OnSettingChangeListener 
     private fun initSummaries() {
         val settings = Settings.getInstance(activity)
 
-        findPreference(Setting.USERNAME.toString()).summary = settings.username ?: ""
+        findPreference(Setting.USERNAME.toString()).summary = settings.username
 
         val reminderFrequencyText = getText(activity, settings.reminderFrequency)
         findPreference(Setting.REMINDER_FREQUENCY.toString()).summary = reminderFrequencyText

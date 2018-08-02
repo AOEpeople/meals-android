@@ -6,7 +6,7 @@
     <item
         android:id="@+id/mainMenu_alarm"
         android:title="ALARM"
-        android:visible="true"
+        android:visible="false"
         app:showAsAction="ifRoom" />
 
     <item
@@ -24,5 +24,6 @@
     <item
         android:id="@+id/mainMenu_refresh"
         app:showAsAction="never"
+        android:visible="false"
         android:title="@string/mainMenu_refresh_title" />
 </menu>

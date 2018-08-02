@@ -51,13 +51,13 @@ class AlarmReceiver : BroadcastReceiver() {
                     Log.d(TAG, Thread.currentThread().name + " ### " +
                             "onReceive() called with: userParticipatesTomorrow = [$userParticipatesTomorrow]")
 
-                    Toast.makeText(context, "Couldn't request server", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, context.getString(R.string.alarmReceiver_serverUnavailable),
+                            Toast.LENGTH_LONG).show()
 
                     if (!latestReminderTimePassed(context)) {
-                        Toast.makeText(context, "Retry in 5min.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, context.getString(R.string.alarmReceiver_retryingIn5min),
+                                Toast.LENGTH_LONG).show()
                         Alarm.setRetryAlarm(context)
-                    } else {
-                        Toast.makeText(context, "Aborting today's notification.", Toast.LENGTH_LONG).show()
                     }
                 }
                 // valid response && user does not participate yet
