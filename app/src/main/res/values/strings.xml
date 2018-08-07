@@ -38,4 +38,6 @@
     <string name="webActivity_toolbar_title">AOEMEALS</string>
 
     <string name="webFragment_toolbar_appBar_title">AOEMEALS</string>
+    <string name="notifications_unavailableNotificationTitle">Server Unavailable</string>
+    <string name="notifications_unavailableNotificationText">Cannot check meals participation. Are you offline? Please check manually whether you\'re enrolled.</string>
 </resources>

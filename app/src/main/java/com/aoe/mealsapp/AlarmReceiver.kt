@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
 import com.aoe.mealsapp.rest.CurrentWeekResponse
 import com.aoe.mealsapp.rest.MealsApiImpl
 import com.aoe.mealsapp.settings.ReminderFrequency
@@ -51,13 +50,10 @@ class AlarmReceiver : BroadcastReceiver() {
                     Log.d(TAG, Thread.currentThread().name + " ### " +
                             "onReceive() called with: userParticipatesTomorrow = [$userParticipatesTomorrow]")
 
-                    Toast.makeText(context, context.getString(R.string.alarmReceiver_serverUnavailable),
-                            Toast.LENGTH_LONG).show()
-
                     if (!latestReminderTimePassed(context)) {
-                        Toast.makeText(context, context.getString(R.string.alarmReceiver_retryingIn5min),
-                                Toast.LENGTH_LONG).show()
                         Alarm.setRetryAlarm(context)
+                    } else {
+                        Notifications.showServerUnavailableNotification(context)
                     }
                 }
                 // valid response && user does not participate yet

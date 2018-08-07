@@ -15,9 +15,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var editText_username: EditText
     private lateinit var editText_password: EditText
 
-    private lateinit var oldUsername: String
-    private lateinit var oldPassword: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, Thread.currentThread().name + " ### " +
@@ -34,18 +31,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         editText_username = loginActivity_editText_username
         editText_username.setText(settings.username)
-        oldUsername = settings.username
 
         editText_password = loginActivity_editText_password
         editText_password.setText(settings.password)
-        oldPassword = settings.password
 
         /* click 'Done' -> login */
 
         editText_password.setOnEditorActionListener { textView, actionId, keyEvent ->
             Log.d(TAG, Thread.currentThread().name + " ### " +
-                    "onCreate() called with: textView = [$textView], actionId = [$actionId]" +
-                    ", keyEvent = [$keyEvent]")
+                    "setOnEditorActionListener() called with: textView = [$textView]" +
+                    ", actionId = [$actionId], keyEvent = [$keyEvent]")
 
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 button_login.performClick()
@@ -67,19 +62,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 val newUsername = editText_username.text.toString()
                 val newPassword = editText_password.text.toString()
 
-                if (oldUsername != newUsername || oldPassword != newPassword) {
+                /* store credentials */
 
-                    /* store credentials */
+                val settings = Settings.getInstance(this)
 
-                    val settings = Settings.getInstance(this)
+                settings.username = newUsername
+                settings.password = newPassword
 
-                    settings.username = newUsername
-                    settings.password = newPassword
+                /* close activity */
 
-                    /* close activity */
+                finish()
 
-                    finish()
-                }
             }
         }
     }

@@ -12,29 +12,30 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.Toast
+import android.webkit.*
 import com.aoe.mealsapp.settings.Language
 import com.aoe.mealsapp.settings.Settings
 import com.aoe.mealsapp.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity_web.*
 import java.util.*
+import java.util.regex.Pattern
 
 class WebActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    // lastly used settings to load page
-    // used to detect settings change between onPause() and onResume()
-    // e.g. because settings were changed in SettingsActivity
-    private lateinit var username: String
-    private lateinit var password: String
-    private lateinit var language: Language
+    // credentials used for last login
+    private var lastUsername: String? = null
+    private var lastPassword: String? = null
 
+    // language returned from last load
+    private var lastLanguage: Language? = null
+
+    // true from onRestoreInstanceState() until first onPageFinished() call
+    var restoring = false
+
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, Thread.currentThread().name + " ### " +
@@ -42,31 +43,51 @@ class WebActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_web)
 
-        initUiWidgets()
-        readSettings()
+        webActivity_toolbar_appBar.setLogo(R.drawable.logo)
+        setSupportActionBar(webActivity_toolbar_appBar)
 
-        if (savedInstanceState == null) {
-            loadLoginPage(username, password)
-        } else {
-            webView.restoreState(savedInstanceState)
+        /* SwipeRefreshLayout & WebView */
+
+        swipeRefreshLayout = webActivity_swipeRefreshLayout_webView
+        swipeRefreshLayout.setOnRefreshListener {
+            refreshWebView()
         }
+
+        webView = webActivity_webView_webApp
+        webView.settings.javaScriptEnabled = true
+        webView.settings.userAgentString = HTTP_USER_AGENT
+        webView.webViewClient = MyWebViewClient()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "onCreateOptionsMenu() called with: menu = [$menu]")
-
         menuInflater.inflate(R.menu.menu_main, menu)
-
-        return super.onCreateOptionsMenu(menu)
+        return true
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "onSaveInstanceState() called with: outState = [$outState]")
 
         webView.saveState(outState)
+
+        outState.putString(STATE_LAST_USERNAME, lastUsername)
+        outState.putString(STATE_LAST_PASSWORD, lastPassword)
+        outState.putSerializable(STATE_LAST_LANGUAGE, lastLanguage)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "onRestoreInstanceState() called with: savedInstanceState = [$savedInstanceState]")
+
+        restoring = true
+
+        webView.restoreState(savedInstanceState)
+
+        lastUsername = savedInstanceState.getString(STATE_LAST_USERNAME)
+        lastPassword = savedInstanceState.getString(STATE_LAST_PASSWORD)
+        lastLanguage = savedInstanceState.getSerializable(STATE_LAST_LANGUAGE) as Language?
     }
 
     override fun onResume() {
@@ -74,7 +95,37 @@ class WebActivity : AppCompatActivity() {
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "onResume() called")
 
-        checkForSettingsChange()
+        /* after return from login / settings screen: check for changes */
+
+        val settings = Settings.getInstance(this)
+
+        val currentUsername = settings.username
+        val currentPassword = settings.password
+        val currentLanguage = settings.language
+
+        if (lastUsername != currentUsername || lastPassword != currentPassword) {
+
+            /* credentials changed ? save them, re-login */
+
+            lastUsername = currentUsername
+            lastPassword = currentPassword
+
+            loadLoginPage(lastUsername!!, lastPassword!!)
+
+        } else if (lastLanguage != currentLanguage) {
+
+            /* language changed ? save it, switch language */
+
+            lastLanguage = currentLanguage
+
+            switchLanguage(webView.url)
+
+        } else if (webView.url !in listOf(PAGE_MAIN, PAGE_TRANSACTIONS)) {
+
+            /* invalid page ? re-login */
+
+            loadLoginPage(lastUsername!!, lastPassword!!)
+        }
     }
 
     override fun onBackPressed() {
@@ -93,6 +144,7 @@ class WebActivity : AppCompatActivity() {
                 "onOptionsItemSelected() called with: item = [$item]")
 
         when (item!!.itemId) {
+            // debugging: manually trigger alarm
             R.id.mainMenu_alarm ->
                 triggerAlarm()
 
@@ -101,135 +153,33 @@ class WebActivity : AppCompatActivity() {
 
             R.id.mainMenu_settings ->
                 startActivity(Intent(this, SettingsActivity::class.java))
-
-            R.id.mainMenu_refresh -> {
-                swipeRefreshLayout.isRefreshing = true
-                refreshWebView()
-            }
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    // region ### init UI
-    //
-
-    private fun initUiWidgets() {
-
-        /* app bar */
-
-        webActivity_toolbar_appBar.setLogo(R.drawable.logo)
-        setSupportActionBar(webActivity_toolbar_appBar)
-
-        /* WebView */
-
-        webView = webActivity_webView_webApp
-
-        swipeRefreshLayout = webActivity_swipeRefreshLayout_webView
-        swipeRefreshLayout.setOnRefreshListener {
-            refreshWebView()
-        }
-
-        initWebView()
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun initWebView() {
-
-        webView.settings.javaScriptEnabled = true
-        webView.settings.userAgentString = HTTP_USER_AGENT
-
-        webView.webViewClient = object : WebViewClient() {
-
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                Log.d(TAG, Thread.currentThread().name + " ### " +
-                        "onPageStarted() called with: view = [$view], url = [$url], favicon = [$favicon]")
-
-                swipeRefreshLayout.isRefreshing = true
-            }
-
-            override fun onPageFinished(view: WebView, url: String) {
-                super.onPageFinished(view, url)
-                Log.d(TAG, Thread.currentThread().name + " ### " +
-                        "onPageFinished() called with: view = [$view], url = [$url]")
-
-                swipeRefreshLayout.isRefreshing = false
-
-                /* wrong page (invalid credentials) ? show LoginActivity */
-
-                // remove trailing slash from URL
-                val normalizedUrl = url.replace("/$".toRegex(), "")
-
-                if (normalizedUrl !in listOf(PAGE_MAIN, PAGE_TRANSACTIONS)) {
-                    startActivity(Intent(this@WebActivity, LoginActivity::class.java))
-                }
-            }
-
-            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-                super.onReceivedError(view, request, error)
-                Log.d(TAG, Thread.currentThread().name + " ### " +
-                        "onReceivedError() called with: view = [$view], request = [$request], error = [$error]")
-
-                swipeRefreshLayout.isRefreshing = false
-
-                Toast.makeText(this@WebActivity, "ERROR", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    //
-    // endregion
-
-    // region ### settings
-    //
-
-    private fun readSettings() {
-        val settings = Settings.getInstance(this)
-
-        username = settings.username
-        password = settings.password
-        language = settings.language
-    }
-
-    private fun checkForSettingsChange() {
-        val settings = Settings.getInstance(this)
-
-        val usernameChanged = username != settings.username
-        val passwordChanged = password != settings.password
-        val languageChanged = language != settings.language
-
-        username = settings.username
-        password = settings.password
-        language = settings.language
-
-        if ((usernameChanged || passwordChanged) && languageChanged) {
-            switchLanguage(targetUrl = PAGE_LOGIN)
-
-        } else if (usernameChanged || passwordChanged) {
-            loadLoginPage(username, password)
-
-        } else if (languageChanged) {
-            switchLanguage(webView.url)
-        }
-    }
-
-    //
-    // endregion
-
     // region ### load pages
     //
 
     private fun loadLoginPage(username: String, password: String) {
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "loadLoginPage() called with: username = [$username], password = [$password]")
+
         val postData = ("_username=$username&_password=$password")
         webView.postUrl(PAGE_LOGIN, postData.toByteArray())
     }
 
     private fun switchLanguage(targetUrl: String) {
-        webView.loadUrl(PAGE_LANGUAGE_SWITCH, mapOf("Referer" to targetUrl))
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "switchLanguage() called with: targetUrl = [$targetUrl]")
+
+        webView.loadUrl(PAGE_LANGUAGE_SWITCH, mutableMapOf("Referer" to targetUrl))
     }
 
     private fun refreshWebView() {
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "refreshWebView() called")
+
         webView.reload()
     }
 
@@ -251,15 +201,74 @@ class WebActivity : AppCompatActivity() {
     //
     // endregion
 
+    inner class MyWebViewClient : WebViewClient() {
+
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            super.onPageStarted(view, url, favicon)
+            Log.d(TAG, Thread.currentThread().name + " ### " +
+                    "onPageStarted() called with: view = [$view], url = [$url], favicon = [$favicon]")
+
+            swipeRefreshLayout.isRefreshing = true
+        }
+
+        override fun onPageFinished(view: WebView, url: String) {
+            super.onPageFinished(view, url)
+            Log.d(TAG, Thread.currentThread().name + " ### " +
+                    "onPageFinished() called with: view = [$view], url = [$url]")
+
+            swipeRefreshLayout.isRefreshing = false
+
+            if (restoring) {
+                restoring = false
+            } else {
+
+                /* read language from cookies & save it */
+
+                var cookieString = CookieManager.getInstance().getCookie(PAGE_MAIN)
+                cookieString = cookieString.replace(" ", "")
+                val cookies = Pattern.compile(";").split(cookieString)
+                for (cookie in cookies) {
+                    val cookieParts = cookie.split("=")
+                    if (cookieParts[0] == "locale") {
+                        lastLanguage = when (cookieParts[1]) {
+                            "de" -> Language.GERMAN
+                            "en" -> Language.ENGLISH
+                            else -> null
+                        }
+                    }
+                }
+
+                /* wrong page (invalid credentials) ? show LoginActivity */
+
+                if (webView.url !in listOf(PAGE_MAIN, PAGE_TRANSACTIONS)) {
+                    startActivity(Intent(this@WebActivity, LoginActivity::class.java))
+                }
+            }
+        }
+
+
+        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+            super.onReceivedError(view, request, error)
+            Log.d(TAG, Thread.currentThread().name + " ### " +
+                    "onReceivedError() called with: view = [$view], request = [$request], error = [$error]")
+
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
     private companion object {
 
         private const val TAG = "WebActivity"
 
-        private const val PAGE_MAIN = BuildConfig.SERVER_URL
+        private const val PAGE_MAIN = BuildConfig.SERVER_URL + "/"
         private const val PAGE_LOGIN = BuildConfig.SERVER_URL + "/login"
         private const val PAGE_TRANSACTIONS = BuildConfig.SERVER_URL + "/accounting/transactions"
         private const val PAGE_LANGUAGE_SWITCH = BuildConfig.SERVER_URL + "/language-switch"
 
         private const val HTTP_USER_AGENT = "MealsApp Android WebView"
+
+        private const val STATE_LAST_USERNAME = "STATE_LAST_USERNAME"
+        private const val STATE_LAST_PASSWORD = "STATE_LAST_PASSWORD"
+        private const val STATE_LAST_LANGUAGE = "STATE_LAST_LANGUAGE"
     }
 }

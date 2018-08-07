@@ -20,10 +20,4 @@
         android:icon="@drawable/ic_settings_white_24dp"
         android:title="@string/mainMenu_settings_title"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/mainMenu_refresh"
-        app:showAsAction="never"
-        android:visible="false"
-        android:title="@string/mainMenu_refresh_title" />
 </menu>

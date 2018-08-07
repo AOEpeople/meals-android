@@ -22,7 +22,7 @@ object Notifications {
     @StringRes
     private const val CHANNEL_NAME = R.string.notifications_channelName
 
-    /* notification */
+    /* reminder notification */
 
     private const val NOTIFICATION_ID = 1
 
@@ -31,6 +31,16 @@ object Notifications {
 
     @StringRes
     private const val NOTIFICATION_TEXT = R.string.notifications_notificationText
+
+    /* server unavailable notification */
+
+    private const val UNAVAILABLE_NOTIFICATION_ID = 2
+
+    @StringRes
+    private const val UNAVAILABLE_NOTIFICATION_TITLE = R.string.notifications_unavailableNotificationTitle
+
+    @StringRes
+    private const val UNAVAILABLE_NOTIFICATION_TEXT = R.string.notifications_unavailableNotificationText
 
     /* */
 
@@ -80,5 +90,34 @@ object Notifications {
 
         val notificationManagerCompat = NotificationManagerCompat.from(context)
         notificationManagerCompat.notify(NOTIFICATION_ID, notification)
+    }
+
+    fun showServerUnavailableNotification(context: Context) {
+
+        /* create notification */
+
+        val notificationTitle = context.getString(UNAVAILABLE_NOTIFICATION_TITLE)
+        val notificationText = context.getString(UNAVAILABLE_NOTIFICATION_TEXT)
+
+        val intent = Intent(context, WebActivity::class.java)
+        val taskStackBuilder = TaskStackBuilder.create(context)
+        taskStackBuilder.addNextIntentWithParentStack(intent)
+        val pendingIntent = taskStackBuilder.getPendingIntent(
+                REQUEST_CODE, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationText)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT) // used until Android 7.1
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .build()
+
+        /* show notification */
+
+        val notificationManagerCompat = NotificationManagerCompat.from(context)
+        notificationManagerCompat.notify(UNAVAILABLE_NOTIFICATION_ID, notification)
     }
 }
