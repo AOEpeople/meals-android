@@ -13,7 +13,6 @@
         android:title="@string/preferences_password_title" />
 
     <ListPreference
-        android:defaultValue="@string/preferences_language_entryValues_english"
         android:entries="@array/preferences_language_entries"
         android:entryValues="@array/preferences_language_entryValues"
         android:key="@string/preferences_language"

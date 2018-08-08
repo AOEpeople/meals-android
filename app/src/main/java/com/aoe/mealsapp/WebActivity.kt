@@ -26,11 +26,12 @@ class WebActivity : AppCompatActivity() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     // credentials used for last login
-    private var lastUsername: String? = null
-    private var lastPassword: String? = null
+    private lateinit var lastUsername: String
+    private lateinit var lastPassword: String
 
     // language returned from last load
-    private var lastLanguage: Language? = null
+    // defaults to GERMAN because the page loads in German by default
+    private lateinit var lastLanguage: Language
 
     // true from onRestoreInstanceState() until first onPageFinished() call
     var restoring = false
@@ -57,6 +58,14 @@ class WebActivity : AppCompatActivity() {
         webView.settings.javaScriptEnabled = true
         webView.settings.userAgentString = HTTP_USER_AGENT
         webView.webViewClient = MyWebViewClient()
+
+        /* */
+
+        val settings = Settings.getInstance(this)
+
+        lastUsername = settings.username
+        lastPassword = settings.password
+        lastLanguage = settings.language
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -87,7 +96,7 @@ class WebActivity : AppCompatActivity() {
 
         lastUsername = savedInstanceState.getString(STATE_LAST_USERNAME)
         lastPassword = savedInstanceState.getString(STATE_LAST_PASSWORD)
-        lastLanguage = savedInstanceState.getSerializable(STATE_LAST_LANGUAGE) as Language?
+        lastLanguage = savedInstanceState.getSerializable(STATE_LAST_LANGUAGE) as Language
     }
 
     override fun onResume() {
@@ -233,7 +242,7 @@ class WebActivity : AppCompatActivity() {
                         lastLanguage = when (cookieParts[1]) {
                             "de" -> Language.GERMAN
                             "en" -> Language.ENGLISH
-                            else -> null
+                            else -> Language.ENGLISH
                         }
                     }
                 }
