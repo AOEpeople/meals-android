@@ -64,12 +64,11 @@ class Settings private constructor(context: Context)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        val setting = Setting.valueOf(key)
-        when (setting) {
-            Setting.USERNAME -> listeners.forEach { it.onUsernameChanged(username) }
-            Setting.PASSWORD -> listeners.forEach { it.onPasswordChanged(password) }
-            Setting.LANGUAGE -> listeners.forEach { it.onLanguageChanged(language) }
-            Setting.REMINDER_FREQUENCY -> listeners.forEach { it.onReminderFrequencyChanged(reminderFrequency) }
+        when (key) {
+            Setting.USERNAME.toString() -> listeners.forEach { it.onUsernameChanged(username) }
+            Setting.PASSWORD.toString() -> listeners.forEach { it.onPasswordChanged(password) }
+            Setting.LANGUAGE.toString() -> listeners.forEach { it.onLanguageChanged(language) }
+            Setting.REMINDER_FREQUENCY.toString() -> listeners.forEach { it.onReminderFrequencyChanged(reminderFrequency) }
         }
     }
 
