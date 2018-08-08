@@ -20,6 +20,8 @@
     <string name="notifications_channelName">Mahlzeits-Erinnerung</string>
     <string name="notifications_notificationText">Trage Dich vor 16:00 ein.</string>
     <string name="notifications_notificationTitle">Denk ans Mittagessen morgen!</string>
+    <string name="notifications_unavailableNotificationText">Teilnahme nicht überprüfbar. Bist du offline? Bitte prüfe selbst ob du eingetragen bist.</string>
+    <string name="notifications_unavailableNotificationTitle">Server nicht erreichbar</string>
 
     <string name="preferences_dailyReminderEnable_title">Tägliche Erinnerung aktivieren</string>
     <string name="preferences_dailyReminderTime_title">Uhrzeit für Erinnerung</string>

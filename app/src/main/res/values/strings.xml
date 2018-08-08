@@ -12,7 +12,6 @@
     <string name="loginActivity_toolbar_appBar_title">AOEMEALS</string>
 
     <string name="mainMenu_account_title">Account</string>
-    <string name="mainMenu_refresh_title">Refresh</string>
     <string name="mainMenu_settings_title">Settings</string>
 
     <string name="notification_text">Did you forget to register for meal tomorrow?</string>
@@ -21,6 +20,8 @@
     <string name="notifications_channelName">Meal Reminder</string>
     <string name="notifications_notificationText">Register before 4pm.</string>
     <string name="notifications_notificationTitle">Remember Tomorrow\'s Lunch!</string>
+    <string name="notifications_unavailableNotificationText">Cannot check meals participation. Are you offline? Please check yourself whether you\'re enrolled.</string>
+    <string name="notifications_unavailableNotificationTitle">Server Unavailable</string>
 
     <string name="preferences_dailyReminderEnable_title">Enable Daily Reminder</string>
     <string name="preferences_dailyReminderTime_title">Reminder Time</string>
@@ -38,6 +39,4 @@
     <string name="webActivity_toolbar_title">AOEMEALS</string>
 
     <string name="webFragment_toolbar_appBar_title">AOEMEALS</string>
-    <string name="notifications_unavailableNotificationTitle">Server Unavailable</string>
-    <string name="notifications_unavailableNotificationText">Cannot check meals participation. Are you offline? Please check manually whether you\'re enrolled.</string>
 </resources>

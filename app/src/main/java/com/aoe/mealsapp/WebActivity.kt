@@ -277,6 +277,10 @@ class WebActivity : AppCompatActivity() {
                     "onReceivedError() called with: view = [$view], request = [$request], error = [$error]")
 
             swipeRefreshLayout.isRefreshing = false
+
+            if (restoring) {
+                restoring = false
+            }
         }
     }
 
