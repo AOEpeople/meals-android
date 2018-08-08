@@ -242,6 +242,21 @@ class WebActivity : AppCompatActivity() {
 
                 if (webView.url !in listOf(PAGE_MAIN, PAGE_TRANSACTIONS)) {
                     startActivity(Intent(this@WebActivity, LoginActivity::class.java))
+                } else {
+
+                    /* valid page but wrong langauge ? switch language */
+
+                    val currentLanguage = Settings.getInstance(this@WebActivity).language
+
+                    if (lastLanguage != currentLanguage) {
+
+                        /* language changed ? save it, switch language */
+
+                        lastLanguage = currentLanguage
+
+                        switchLanguage(webView.url)
+
+                    }
                 }
             }
         }
