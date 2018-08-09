@@ -38,22 +38,6 @@ The `Settings` singleton provides a simple API over the `SharedPreferences`. It 
 
 `PreferenceKeys` singleton merely contains the preference keys as defined in `preferences.xml`. The keys are used by `Settings` to save settings and `SettingsFragment` to find `Preference`s.
 
-## Alarm
-
-The app sets an alarm that is triggered daily at a pre-set reminder time which is defined in the config file. It is set to some hours before the registration period ends.
-
-The alarm is set on the first app startup (App.onCreate()). As alarms are deleted when the system reboots the alarm is also set after booting (BootReceiver.onReceive()).
-
-As a consequence not every triggered alarm will lead to a server request depending on the user's setting for the reminder frequency. If the user decides that he doesn't want to be notified at all then nothing will be done on any day's alarm.
-
-Alternatively one might have chosen to only set alarms for days on which the server needs to be requested. In that case, however, multiple, weekly alarms would have to be set to cover reminder frequencies like "before every weekday" which would make the code more complicated. For the same reason the daily alarm isn't deactivated when the user choses "never" as the reminder frequency. This might be improved by using a JobScheduler (https://developer.android.com/topic/performance/scheduling.html) when targeting API level 21+.
-
-So, it's super simple: The alarm fires every day. Then, it's determined based on the set reminder frequency whether the server is requested or not.
-
-Finally, if the app is first started or the device booted after the set reminder time the reminder functionality will still be executed if the latest possible reminder time (shortly before the registration period ends) hasn't passed, yet.
-
-Note: On Android, especially on the latest versions, alarms are inexact by design so that the system can batch alarms that are timed close to each other to reduce energy consumption. In theory an inexact alarm can be triggered up 150% too late (i.e. an alarm set to be triggered in one day might be triggered after 2.5 days). In practice alarms are delayed at most by 10-15 minutes.
-
 ## Server Request
 
 The server requests consists of two HTTP requests: a POST request that performs an OAuth login and returns the OAuth token and a GET request that uses the OAuth token to get the users meals participation for next week as a JSON string. That string is parsed for the relevant information: whether the user participates the next day.
