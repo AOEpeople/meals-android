@@ -36,6 +36,8 @@
     <string name="preferences_username_hint">john.doe</string>
     <string name="preferences_username_title">Username</string>
 
+    <string name="toast_serverUnavailable">Server not reachable. Are you offline?</string>
+
     <string name="webActivity_toolbar_title">AOEMEALS</string>
 
     <string name="webFragment_toolbar_appBar_title">AOEMEALS</string>

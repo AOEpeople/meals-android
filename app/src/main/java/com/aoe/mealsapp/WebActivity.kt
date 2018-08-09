@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.*
+import android.widget.Toast
 import com.aoe.mealsapp.settings.Language
 import com.aoe.mealsapp.settings.Settings
 import com.aoe.mealsapp.settings.SettingsActivity
@@ -264,7 +265,6 @@ class WebActivity : AppCompatActivity() {
                         lastLanguage = currentLanguage
 
                         switchLanguage(webView.url)
-
                     }
                 }
             }
@@ -281,6 +281,9 @@ class WebActivity : AppCompatActivity() {
             if (restoring) {
                 restoring = false
             }
+
+            startActivity(Intent(this@WebActivity, LoginActivity::class.java))
+            Toast.makeText(this@WebActivity, R.string.toast_serverUnavailable, Toast.LENGTH_LONG).show()
         }
     }
 
