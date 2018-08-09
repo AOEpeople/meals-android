@@ -1,4 +1,5 @@
 # meals-android
+
 Android wrapper for the web app
 
 # Installation
@@ -6,21 +7,7 @@ Download and install the following binary on your Android device: [app-release.a
 
 # Architecture
 
-## Overview
 
-The most important components of the app are the activities (MainActivity, SettingsActivity), the BroadcastReceivers (AlarmReceiver, BootReceiver) and the SharedPreferences store.
-
-The MainActivity normally holds the WebFragment which contains a WebView that displays the Meals web app. It is loaded when the user starts the app and gets the user's credentials from the SharedPreference store. If no credentials exist or the existing credentials are invalid the LoginFragment is presented to the user.
-
-The WebFragment also shows an app bar with a menu. There the user can click the settings item to open the SettingsActivity. The SettingsActivity contains the SettingsFragment which loads its UI from the preferences.xml file. There the user can change his credentials, the web app's language and the reminder frequency.
-
-Changing the reminder frequency sets the appropriate alarm that is triggered the day the user wants to be notified (before Mondays / before any weekday / never). When the alarm is triggered the AlarmReceiver's onReceive() method is called that sends a request to the Meals server to determine whether the user is already registered for meal. If not, a notification is added to the notification tray. Clicking it opens the app.
-
-The server requests consists of two HTTP requests: a POST request that performs an OAuth login and returns the OAuth token and a GET request that uses the OAuth token to get the users meals participation for next week as a JSON string. That string is parsed for the relevant information: whether the user participates the next day.
-
-Because all alarms removed when the device reboots the BootReceiver will set the alarm again as soon as the system boots.
-
-Any preference changes are stored in the app's default SharedPreferences. The WebFragment checks these for changes when it resumes and reloads the web page accordingly.
 
 ## Settings
 
@@ -68,6 +55,8 @@ Finally, if the app is first started or the device booted after the set reminder
 Note: On Android, especially on the latest versions, alarms are inexact by design so that the system can batch alarms that are timed close to each other to reduce energy consumption. In theory an inexact alarm can be triggered up 150% too late (i.e. an alarm set to be triggered in one day might be triggered after 2.5 days). In practice alarms are delayed at most by 10-15 minutes.
 
 ## Server Request
+
+The server requests consists of two HTTP requests: a POST request that performs an OAuth login and returns the OAuth token and a GET request that uses the OAuth token to get the users meals participation for next week as a JSON string. That string is parsed for the relevant information: whether the user participates the next day.
 
 When the alarm is triggered the app checks whether the user wants to be notified for the next day. If the next day is a weekday and the user set a reminder frequency that covers the next day this will be true.
 
