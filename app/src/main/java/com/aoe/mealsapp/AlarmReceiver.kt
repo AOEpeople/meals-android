@@ -33,9 +33,11 @@ class AlarmReceiver : BroadcastReceiver() {
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "onReceive() called with: context = [$context], intent = [$intent]")
 
-        /* if it's too late today: do nothing */
+        /* if the try/retry happens too late (between 15:30 and 15:55) notify user */
 
-        if (latestReminderTimePassed(context)) {
+        if (latestReminderTimePassed(context) && beforeDeadline(context)) {
+            Notifications.showServerUnavailableNotification(context)
+
             return
         }
 
@@ -50,11 +52,7 @@ class AlarmReceiver : BroadcastReceiver() {
                     Log.d(TAG, Thread.currentThread().name + " ### " +
                             "onReceive() called with: userParticipatesTomorrow = [$userParticipatesTomorrow]")
 
-                    if (!latestReminderTimePassed(context)) {
-                        Alarm.setRetryAlarm(context)
-                    } else {
-                        Notifications.showServerUnavailableNotification(context)
-                    }
+                    Alarm.setRetryAlarm(context)
                 }
                 // valid response && user does not participate yet
                 else if (!userParticipatesTomorrow) {
@@ -69,6 +67,13 @@ class AlarmReceiver : BroadcastReceiver() {
         val latestReminderTime = Config.readTime(context, Config.LATEST_REMINDER_TIME)
 
         return now.timeInMillis > latestReminderTime.timeInMillis
+    }
+
+    private fun beforeDeadline(context: Context): Boolean {
+        val now = Calendar.getInstance()
+        val deadline = Config.readTime(context, Config.DEADLINE)
+
+        return now.timeInMillis < deadline.timeInMillis
     }
 
     /**

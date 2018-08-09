@@ -16,6 +16,7 @@ public class Config {
 
     public static final String REMINDER_TIME = "reminderTime";
     public static final String LATEST_REMINDER_TIME = "latestReminderTime";
+    public static final String DEADLINE = "deadline";
 
     /**
      * Read a time property with the time's format being H:mm (e.g. 9:05).
