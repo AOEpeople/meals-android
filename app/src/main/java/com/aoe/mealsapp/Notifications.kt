@@ -77,7 +77,7 @@ object Notifications {
                 REQUEST_CODE, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                .setSmallIcon(R.drawable.notification)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationText)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) // used until Android 7.1
@@ -106,7 +106,7 @@ object Notifications {
                 REQUEST_CODE, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                .setSmallIcon(R.drawable.notification)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationText)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) // used until Android 7.1
