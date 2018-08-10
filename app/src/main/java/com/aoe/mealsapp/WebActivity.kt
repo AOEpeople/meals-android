@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.*
-import android.widget.Toast
 import com.aoe.mealsapp.settings.Language
 import com.aoe.mealsapp.settings.Settings
 import com.aoe.mealsapp.settings.SettingsActivity
@@ -36,6 +35,10 @@ class WebActivity : AppCompatActivity() {
 
     // true from onRestoreInstanceState() until first onPageFinished() call
     var restoring = false
+
+    // remember an error in onReceivedError() so that the error page is left
+    // untouched in onPageFinished(). Reset it in onPageStarted()
+    var errorLoadingPage = false
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -219,12 +222,17 @@ class WebActivity : AppCompatActivity() {
                     "onPageStarted() called with: view = [$view], url = [$url], favicon = [$favicon]")
 
             swipeRefreshLayout.isRefreshing = true
+
+            errorLoadingPage = false
         }
 
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
             Log.d(TAG, Thread.currentThread().name + " ### " +
                     "onPageFinished() called with: view = [$view], url = [$url]")
+
+            if (errorLoadingPage)
+                return
 
             swipeRefreshLayout.isRefreshing = false
 
@@ -282,8 +290,7 @@ class WebActivity : AppCompatActivity() {
                 restoring = false
             }
 
-            startActivity(Intent(this@WebActivity, LoginActivity::class.java))
-            Toast.makeText(this@WebActivity, R.string.toast_serverUnavailable, Toast.LENGTH_LONG).show()
+            errorLoadingPage = true
         }
     }
 
