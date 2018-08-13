@@ -5,9 +5,19 @@ Android wrapper for the web app
 # Installation
 Download and install the following binary on your Android device: [app-release.apk](app-release.apk)
 
-# Architecture
+# Release History
 
+### 1.0.1
 
+Fixes:
+
+* App displayed login screen when pressing back on menu screen if user entered wrong credentials before 
+* App displayed menu screen in wrong language if user changed language while he was on the balance screen before
+* Sometimes, user had to press back twice to navigate back
+
+### 1.0
+
+First stable version
 
 ## Settings
 
