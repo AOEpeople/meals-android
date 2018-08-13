@@ -178,6 +178,8 @@ class WebActivity : AppCompatActivity() {
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "loadLoginPage() called with: username = [$username], password = [$password]")
 
+        webView.clearHistory()
+
         val postData = ("_username=$username&_password=$password")
         webView.postUrl(PAGE_LOGIN, postData.toByteArray())
     }
@@ -242,18 +244,23 @@ class WebActivity : AppCompatActivity() {
 
                 /* read language from cookies & save it */
 
+                // TODO check
                 var cookieString = CookieManager.getInstance().getCookie(PAGE_MAIN)
-                cookieString = cookieString.replace(" ", "")
-                val cookies = Pattern.compile(";").split(cookieString)
-                for (cookie in cookies) {
-                    val cookieParts = cookie.split("=")
-                    if (cookieParts[0] == "locale") {
-                        lastLanguage = when (cookieParts[1]) {
-                            "de" -> Language.GERMAN
-                            "en" -> Language.ENGLISH
-                            else -> Language.ENGLISH
+                if (cookieString != null) {
+                    cookieString = cookieString.replace(" ", "")
+                    val cookies = Pattern.compile(";").split(cookieString)
+                    for (cookie in cookies) {
+                        val cookieParts = cookie.split("=")
+                        if (cookieParts[0] == "locale") {
+                            lastLanguage = when (cookieParts[1]) {
+                                "de" -> Language.GERMAN
+                                "en" -> Language.ENGLISH
+                                else -> Language.ENGLISH
+                            }
                         }
                     }
+                } else {
+                    lastLanguage = Language.ENGLISH
                 }
 
                 /* wrong page (invalid credentials) ? show LoginActivity */
