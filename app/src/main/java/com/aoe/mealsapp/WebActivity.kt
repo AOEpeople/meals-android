@@ -145,10 +145,9 @@ class WebActivity : AppCompatActivity() {
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "onBackPressed() called")
 
-        if (webView.canGoBack()) {
-            webView.goBack()
-        } else {
-            super.onBackPressed()
+        when (webView.url) {
+            PAGE_MAIN -> finish()
+            PAGE_TRANSACTIONS -> loadMenuPage()
         }
     }
 
@@ -178,10 +177,12 @@ class WebActivity : AppCompatActivity() {
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "loadLoginPage() called with: username = [$username], password = [$password]")
 
-        webView.clearHistory()
-
         val postData = ("_username=$username&_password=$password")
         webView.postUrl(PAGE_LOGIN, postData.toByteArray())
+    }
+
+    private fun loadMenuPage() {
+        webView.loadUrl(PAGE_MAIN)
     }
 
     private fun switchLanguage(targetUrl: String) {
@@ -222,6 +223,8 @@ class WebActivity : AppCompatActivity() {
             super.onPageStarted(view, url, favicon)
             Log.d(TAG, Thread.currentThread().name + " ### " +
                     "onPageStarted() called with: view = [$view], url = [$url], favicon = [$favicon]")
+
+            webView.clearHistory()
 
             swipeRefreshLayout.isRefreshing = true
 
