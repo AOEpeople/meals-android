@@ -55,7 +55,7 @@ class WebActivity : AppCompatActivity() {
 
         swipeRefreshLayout = webActivity_swipeRefreshLayout_webView
         swipeRefreshLayout.setOnRefreshListener {
-            refreshWebView()
+            reload()
         }
 
         webView = webActivity_webView_webApp
@@ -123,7 +123,7 @@ class WebActivity : AppCompatActivity() {
             lastUsername = currentUsername
             lastPassword = currentPassword
 
-            loadLoginPage(lastUsername!!, lastPassword!!)
+            login(lastUsername!!, lastPassword!!)
 
         } else if (lastLanguage != currentLanguage) {
 
@@ -131,13 +131,13 @@ class WebActivity : AppCompatActivity() {
 
             lastLanguage = currentLanguage
 
-            switchLanguage(webView.url)
+            switchLanguage()
 
-        } else if (webView.url !in listOf(PAGE_MAIN, PAGE_TRANSACTIONS)) {
+        } else if (webView.url !in listOf(URL_MAIN, URL_TRANSACTIONS)) {
 
             /* invalid page ? re-login */
 
-            loadLoginPage(lastUsername!!, lastPassword!!)
+            login(lastUsername!!, lastPassword!!)
         }
     }
 
@@ -146,8 +146,8 @@ class WebActivity : AppCompatActivity() {
                 "onBackPressed() called")
 
         when (webView.url) {
-            PAGE_MAIN -> finish()
-            PAGE_TRANSACTIONS -> loadMenuPage()
+            URL_MAIN -> finish()
+            URL_TRANSACTIONS -> loadMenuPage()
         }
     }
 
@@ -157,14 +157,10 @@ class WebActivity : AppCompatActivity() {
 
         when (item!!.itemId) {
             // debugging: manually trigger alarm
-            R.id.mainMenu_alarm ->
-                triggerAlarm()
+            R.id.mainMenu_alarm -> triggerAlarm()
 
-            R.id.mainMenu_account ->
-                webView.loadUrl(PAGE_TRANSACTIONS)
-
-            R.id.mainMenu_settings ->
-                startActivity(Intent(this, SettingsActivity::class.java))
+            R.id.mainMenu_account -> loadTransactionsPage()
+            R.id.mainMenu_settings -> startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         return super.onOptionsItemSelected(item)
@@ -173,29 +169,24 @@ class WebActivity : AppCompatActivity() {
     // region ### load pages
     //
 
-    private fun loadLoginPage(username: String, password: String) {
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "loadLoginPage() called with: username = [$username], password = [$password]")
-
+    private fun login(username: String, password: String) {
         val postData = ("_username=$username&_password=$password")
-        webView.postUrl(PAGE_LOGIN, postData.toByteArray())
+        webView.postUrl(URL_LOGIN, postData.toByteArray())
     }
 
     private fun loadMenuPage() {
-        webView.loadUrl(PAGE_MAIN)
+        webView.loadUrl(URL_MAIN)
     }
 
-    private fun switchLanguage(targetUrl: String) {
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "switchLanguage() called with: targetUrl = [$targetUrl]")
-
-        webView.loadUrl(PAGE_LANGUAGE_SWITCH, mutableMapOf("Referer" to targetUrl))
+    private fun loadTransactionsPage() {
+        webView.loadUrl(URL_TRANSACTIONS)
     }
 
-    private fun refreshWebView() {
-        Log.d(TAG, Thread.currentThread().name + " ### " +
-                "refreshWebView() called")
+    private fun switchLanguage() {
+        webView.loadUrl(URL_LANGUAGE_SWITCH, mutableMapOf("Referer" to webView.url))
+    }
 
+    private fun reload() {
         webView.reload()
     }
 
@@ -248,7 +239,7 @@ class WebActivity : AppCompatActivity() {
                 /* read language from cookies & save it */
 
                 // TODO check
-                var cookieString = CookieManager.getInstance().getCookie(PAGE_MAIN)
+                var cookieString = CookieManager.getInstance().getCookie(URL_MAIN)
                 if (cookieString != null) {
                     cookieString = cookieString.replace(" ", "")
                     val cookies = Pattern.compile(";").split(cookieString)
@@ -268,7 +259,7 @@ class WebActivity : AppCompatActivity() {
 
                 /* wrong page (invalid credentials) ? show LoginActivity */
 
-                if (webView.url !in listOf(PAGE_MAIN, PAGE_TRANSACTIONS)) {
+                if (webView.url !in listOf(URL_MAIN, URL_TRANSACTIONS)) {
                     startActivity(Intent(this@WebActivity, LoginActivity::class.java))
                 } else {
 
@@ -282,7 +273,7 @@ class WebActivity : AppCompatActivity() {
 
                         lastLanguage = currentLanguage
 
-                        switchLanguage(webView.url)
+                        switchLanguage()
                     }
                 }
             }
@@ -308,10 +299,10 @@ class WebActivity : AppCompatActivity() {
 
         private const val TAG = "WebActivity"
 
-        private const val PAGE_MAIN = BuildConfig.SERVER_URL + "/"
-        private const val PAGE_LOGIN = BuildConfig.SERVER_URL + "/login"
-        private const val PAGE_TRANSACTIONS = BuildConfig.SERVER_URL + "/accounting/transactions"
-        private const val PAGE_LANGUAGE_SWITCH = BuildConfig.SERVER_URL + "/language-switch"
+        private const val URL_MAIN = BuildConfig.SERVER_URL + "/"
+        private const val URL_LOGIN = BuildConfig.SERVER_URL + "/login"
+        private const val URL_TRANSACTIONS = BuildConfig.SERVER_URL + "/accounting/transactions"
+        private const val URL_LANGUAGE_SWITCH = BuildConfig.SERVER_URL + "/language-switch"
 
         private const val HTTP_USER_AGENT = "MealsApp Android WebView"
 
