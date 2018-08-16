@@ -120,4 +120,9 @@ object Notifications {
         val notificationManagerCompat = NotificationManagerCompat.from(context)
         notificationManagerCompat.notify(UNAVAILABLE_NOTIFICATION_ID, notification)
     }
+
+    fun removeAllNotifications(context: Context) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+    }
 }

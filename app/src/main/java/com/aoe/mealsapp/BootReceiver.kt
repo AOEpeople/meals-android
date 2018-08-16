@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-import com.aoe.mealsapp.util.Alarm
+import com.aoe.mealsapp.util.Alarms
 
 class BootReceiver : BroadcastReceiver() {
 
@@ -19,7 +19,8 @@ class BootReceiver : BroadcastReceiver() {
                 "onReceive() called with: context = [$context], intent = [$intent]")
 
         if (intent.action != null && intent.action == "android.intent.action.BOOT_COMPLETED") {
-            Alarm.setDailyAlarm(context)
+            Alarms.activateReminderAlarm(context)
+            Alarms.activateRemoverAlarm(context)
         }
     }
 

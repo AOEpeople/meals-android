@@ -5,7 +5,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import com.aoe.mealsapp.settings.Language
 import com.aoe.mealsapp.settings.Settings
-import com.aoe.mealsapp.util.Alarm
+import com.aoe.mealsapp.util.Alarms
 import java.util.*
 
 class App : Application() {
@@ -25,7 +25,8 @@ class App : Application() {
 
         if (settings.firstAppStart) {
 
-            Alarm.setDailyAlarm(this)
+            Alarms.activateReminderAlarm(this)
+            Alarms.activateRemoverAlarm(this)
 
             /* init web app's language to system's language */
 

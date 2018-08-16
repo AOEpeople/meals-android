@@ -8,7 +8,7 @@ import com.aoe.mealsapp.rest.CurrentWeekResponse
 import com.aoe.mealsapp.rest.MealsApiImpl
 import com.aoe.mealsapp.settings.ReminderFrequency
 import com.aoe.mealsapp.settings.Settings
-import com.aoe.mealsapp.util.Alarm
+import com.aoe.mealsapp.util.Alarms
 import com.aoe.mealsapp.util.Config
 import java.util.*
 
@@ -33,6 +33,24 @@ class AlarmReceiver : BroadcastReceiver() {
         Log.d(TAG, Thread.currentThread().name + " ### " +
                 "onReceive() called with: context = [$context], intent = [$intent]")
 
+        val requestCode = intent.extras.getInt(Alarms.EXTRA_REQUEST_CODE)
+
+        when (requestCode) {
+            Alarms.REQUEST_CODE_REMINDER_ALARM, Alarms.REQUEST_CODE_RETRY_ALARM ->
+                runParticipationCheck(context)
+
+            Alarms.REQUEST_CODE_REMOVE_NOTIFICATION_ALARM ->
+                Notifications.removeAllNotifications(context)
+        }
+    }
+
+    private fun removeNotifications() {
+        Log.d(TAG, Thread.currentThread().name + " ### " +
+                "removeNotifications() called")
+    }
+
+    private fun runParticipationCheck(context: Context) {
+
         /* if the try/retry happens too late (between 15:30 and 15:55) notify user */
 
         if (latestReminderTimePassed(context) && beforeDeadline(context)) {
@@ -52,7 +70,7 @@ class AlarmReceiver : BroadcastReceiver() {
                     Log.d(TAG, Thread.currentThread().name + " ### " +
                             "onReceive() called with: userParticipatesTomorrow = [$userParticipatesTomorrow]")
 
-                    Alarm.setRetryAlarm(context)
+                    Alarms.setRetryAlarm(context)
                 }
                 // valid response && user does not participate yet
                 else if (!userParticipatesTomorrow) {
