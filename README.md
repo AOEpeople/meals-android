@@ -7,6 +7,12 @@ Download and install the following binary on your Android device: [app-release.a
 
 # Release History
 
+### 1.0.2
+
+Fixes:
+
+* Notification is removed when it's too late to register (16:00)
+
 ### 1.0.1
 
 Fixes:
